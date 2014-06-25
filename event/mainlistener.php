@@ -16,12 +16,12 @@ namespace anavaro\birthdaycontrol\event;
 */
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class acplistener implements EventSubscriberInterface
+class mainlistener implements EventSubscriberInterface
 {	
 	static public function getSubscribedEvents()
     {
 		return array(
-			'core.acp_board_config_edit_add'	=>	'add_options',
+			'core.common'	=>	'default_configs',
 		);
     }
 	
@@ -58,39 +58,48 @@ class acplistener implements EventSubscriberInterface
 		$this->table_prefix = $table_prefix;
 	}
 
-	public function add_options($event)
+	public function default_configs($event)
 	{
-		if ($event['mode'] == 'settings')
+		$register = ($this->request->variable('mode', '') == 'register' ? true : false);
+		if ($register)
 		{
-			// Store display_vars event in a local variable
-			$display_vars = $event['display_vars'];
+			if ($this->config['birthday_require'])
+			{
+				$day = $this->request->variable('bday_day', 0);
+				$month = $this->request->variable('bday_month', 0);
+				$year = $this->request->variable('bday_year', 0);
+				$this->template->assign_var('IS_BIRTHDAY_REQUIRE', '1');
+				$s_birthday_day_options = '<option value="0"' . (($day == 0) ? ' selected="selected"' : '') . '>--</option>';
+				for ($i = 1; $i < 32; $i++)
+				{
+					$selected = ($i == $day) ? ' selected="selected"' : '';
+					$s_birthday_day_options .= "<option value=\"$i\"$selected>$i</option>";
+				}
+				$s_birthday_month_options = '<option value="0"' . (($month == 0) ? ' selected="selected"' : '') . '>--</option>';
+				for ($i = 1; $i < 13; $i++)
+				{
+					$selected = ($i == $month) ? ' selected="selected"' : '';
+					$s_birthday_month_options .= "<option value=\"$i\"$selected>$i</option>";
+				}
+				$s_birthday_year_options = '';
+				$now = getdate();
+				$s_birthday_year_options = '<option value="0"' . (($year == 0) ? ' selected="selected"' : '') . '>--</option>';
+				for ($i = $now['year'] - 100; $i <= $now['year']; $i++)
+				{
+					$selected = ($i == $year) ? ' selected="selected"' : '';
+					$s_birthday_year_options .= "<option value=\"$i\"$selected>$i</option>";
+				}
+				unset($now);
 
-			// Define my new config vars
-			$my_config_vars = array(
-				'legend10'	=> 'BIRTHDAY_CONTROL',
-				'birthday_require' => array('lang' => 'BIRTHDAY_REQUIRE', 'validate' => 'bool', 'type' => 'radio: yes_no', 'explain' => true),
-				'birthday_min_age' => array('lang' => 'BIRTHDAY_MIN_AGE', 'validate' => 'int:0:99', 'type' => 'number:0:99', 'explain' => true),
-				'birthday_show_profile'	=> array('lang' => 'BIRTHDAY_SHOW_PROFILE', 'validate' => 'bool', 'type' => 'radio: yes_no', 'explain' => true),
-				'birthday_show_profile_uc'	=> array('lang' => 'BIRTHDAY_SHOW_PROFILE_UC', 'validate' => 'bool', 'type' => 'radio: yes_no', 'explain' => true),
-				'birthday_show_post'	=> array('lang' => 'BIRTHDAY_SHOW_POST', 'validate' => 'bool', 'type' => 'radio: yes_no', 'explain' => true),
-				'birthday_show_post_uc'	=> array('lang' => 'BIRTHDAY_SHOW_PROFILE', 'validate' => 'bool', 'type' => 'radio: yes_no', 'explain' => true),
-			);
+				$this->template->assign_vars(array(
+					'S_BIRTHDAY_DAY_OPTIONS'        => $s_birthday_day_options,
+					'S_BIRTHDAY_MONTH_OPTIONS'      => $s_birthday_month_options,
+					'S_BIRTHDAY_YEAR_OPTIONS'       => $s_birthday_year_options,
+					'S_BIRTHDAYS_ENABLED'           => true,
+				));
 
-			// Insert my config vars after...
-			$insert_after = 'WARNINGS';
-			
-			// Rebuild new config var array
-			$position = array_search($insert_after, array_keys($display_vars['vars'])) - 1;
-			$display_vars['vars'] = array_merge(
-				array_slice($display_vars['vars'], 0, $position),
-				$my_config_vars,
-				array_slice($display_vars['vars'], $position)
-			);
-
-			// Update the display_vars  event with the new array
-			$event['display_vars'] = array('title' => $display_vars['title'], 'vars' => $display_vars['vars']);
+			}
 		}
-		
 	}
 	
 	public function var_display($event)
