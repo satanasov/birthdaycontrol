@@ -14,7 +14,7 @@ namespace anavaro\birthdaycontrol\migrations;
 * lets create some CPFs
 */
 
-class cpf_age extends m2_set_cpf
+class cpf_age extends \phpbb\db\migration\profilefield_base_migration
 {
 	static public function depends_on()
 	{
