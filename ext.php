@@ -9,7 +9,7 @@
 *
 */
 
-namespace anavaro\birthdacontrol;
+namespace anavaro\birthdaycontrol;
 
 /**
 * Extension class for board announcements
