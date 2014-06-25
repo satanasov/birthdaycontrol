@@ -1,0 +1,29 @@
+{
+	"name": "anavaro/birthdaycontrol",
+	"type": "phpbb-extension",
+	"description": "Adds restrictions for registration of users under certain age.",
+	"homepage": "https://github.com/lucifer4o/birthdaycontrol",
+	"version": "0.5.0",
+	"time": "2014-06-25",
+	"license": "GPL-2.0",
+	"authors": [
+		{
+			"name": "Stanislav Atanasov",
+			"email": "lucifer@anavaro.com",
+			"homepage": "http://anavaro.com",
+			"role": "Lead Developer"
+		}
+	],
+	"require": {
+		"php": ">=5.3",
+		"phpbb/phpbb": "3.1.*@dev"
+	},
+	"extra": {
+		"display-name": "phpBB 3.1 Birthday Control",
+		"version-check": {
+			"host": "lab.anavaro.com",
+			"directory": "/phpbb-ext",
+			"filename": "birthdaycontrol.json"
+		}
+	}
+}
