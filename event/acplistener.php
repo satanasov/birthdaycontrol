@@ -60,6 +60,7 @@ class acplistener implements EventSubscriberInterface
 
 	public function add_options($event)
 	{
+		//$this->var_display($event['display_vars']);
 		if ($event['mode'] == 'settings')
 		{
 			// Store display_vars event in a local variable
@@ -68,6 +69,7 @@ class acplistener implements EventSubscriberInterface
 			// Define my new config vars
 			$my_config_vars = array(
 				'legend10'	=> 'BIRTHDAY_CONTROL',
+				'allow_birthdays' => array('lang' => 'ALLOW_BIRTHDAYS', 'validate' => 'bool', 'type' => 'radio: yes_no', 'explain' => true),
 				'birthday_require' => array('lang' => 'BIRTHDAY_REQUIRE', 'validate' => 'bool', 'type' => 'radio: yes_no', 'explain' => true),
 				'birthday_min_age' => array('lang' => 'BIRTHDAY_MIN_AGE', 'validate' => 'int:0:99', 'type' => 'number:0:99', 'explain' => true),
 				'birthday_show_profile'	=> array('lang' => 'BIRTHDAY_SHOW_PROFILE', 'validate' => 'bool', 'type' => 'radio: yes_no', 'explain' => true),
