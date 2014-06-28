@@ -63,6 +63,11 @@ class acplistener implements EventSubscriberInterface
 		//$this->var_display($event['display_vars']);
 		if ($event['mode'] == 'settings')
 		{
+			$this->var_display($this->user->data);
+			//Let's get some language variables
+			
+			$this->user->add_lang_ext('anavaro/birthdaycontrol', 'acp_lang');
+		
 			// Store display_vars event in a local variable
 			$display_vars = $event['display_vars'];
 
@@ -72,17 +77,14 @@ class acplistener implements EventSubscriberInterface
 				'allow_birthdays' => array('lang' => 'ALLOW_BIRTHDAYS', 'validate' => 'bool', 'type' => 'radio: yes_no', 'explain' => true),
 				'birthday_require' => array('lang' => 'BIRTHDAY_REQUIRE', 'validate' => 'bool', 'type' => 'radio: yes_no', 'explain' => true),
 				'birthday_min_age' => array('lang' => 'BIRTHDAY_MIN_AGE', 'validate' => 'int:0:99', 'type' => 'number:0:99', 'explain' => true),
-				'birthday_show_profile'	=> array('lang' => 'BIRTHDAY_SHOW_PROFILE', 'validate' => 'bool', 'type' => 'radio: yes_no', 'explain' => true),
-				'birthday_show_profile_uc'	=> array('lang' => 'BIRTHDAY_SHOW_PROFILE_UC', 'validate' => 'bool', 'type' => 'radio: yes_no', 'explain' => true),
 				'birthday_show_post'	=> array('lang' => 'BIRTHDAY_SHOW_POST', 'validate' => 'bool', 'type' => 'radio: yes_no', 'explain' => true),
-				'birthday_show_post_uc'	=> array('lang' => 'BIRTHDAY_SHOW_PROFILE', 'validate' => 'bool', 'type' => 'radio: yes_no', 'explain' => true),
 			);
 
 			// Insert my config vars after...
-			$insert_after = 'WARNINGS';
+			$insert_before = 'WARNINGS';
 			
 			// Rebuild new config var array
-			$position = array_search($insert_after, array_keys($display_vars['vars'])) - 1;
+			$position = array_search($insert_before, array_keys($display_vars['vars'])) - 1;
 			$display_vars['vars'] = array_merge(
 				array_slice($display_vars['vars'], 0, $position),
 				$my_config_vars,
