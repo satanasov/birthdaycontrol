@@ -63,7 +63,7 @@ class acplistener implements EventSubscriberInterface
 		//$this->var_display($event['display_vars']);
 		if ($event['mode'] == 'settings')
 		{
-			$this->var_display($this->user->data);
+			//$this->var_display($this->user->data);
 			//Let's get some language variables
 			
 			$this->user->add_lang_ext('anavaro/birthdaycontrol', 'acp_lang');

@@ -27,22 +27,30 @@ class m2_create_cpf extends \phpbb\db\migration\profilefield_base_migration
 	{
 		return array(
 			array('custom', array(array($this, 'create_custom_field'))),
+			array('custom', array(array($this, 'create_language_entries'))),
+		);
+	}
+	
+	public function revert_data()
+	{
+		return array(
+			array('custom', array(array($this, 'clean_cpf_db_entries'))),
 		);
 	}
 	
 	protected $profilefield_name = 'bc_show_bday';
 
-	protected $profilefield_database_type = array('UINT:2', 1);
+	protected $profilefield_database_type = array('UINT:2', 2);
 
 	protected $profilefield_data = array(
 		'field_name'	=> 'bc_show_bday',
 		'field_type'	=> 'profilefields.type.bool',
 		'field_ident'	=> 'bc_show_bday',
-		'field_length'	=> 1,
-		'field_minlen'	=> 0,
-		'field_maxlen'	=> 0,
-		'field_novalue'	=> 0,
-		'field_default_value'	=> 1,
+		'field_length'	=> '1',
+		'field_minlen'	=> '0',
+		'field_maxlen'	=> '0',
+		'field_novalue'	=> '1',
+		'field_default_value'	=> 2,
 		'field_validation'	=> '',
 		'field_required'	=> 0,
 		'field_show_novalue'	=> 0,
@@ -58,5 +66,17 @@ class m2_create_cpf extends \phpbb\db\migration\profilefield_base_migration
 		'field_contact_desc'	=> '',
 		'field_contact_url'	=> '',
 	);
-
+	
+	protected $profilefield_language_data = array(
+		array(
+			'option_id'	=> 1,
+			'field_type'	=> 'profilefields.type.bool',
+			'lang_value'	=> 'Yes',
+		),
+		array(
+			'option_id'	=> 2,
+			'field_type'	=> 'profilefields.type.bool',
+			'lang_value'	=> 'No',
+		),
+	);
 }

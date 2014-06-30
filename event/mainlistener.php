@@ -22,6 +22,7 @@ class mainlistener implements EventSubscriberInterface
     {
 		return array(
 			'core.common'	=>	'default_configs',
+			'core.user_add_modify_data'	=> 'user_add_modify',
 		);
     }
 	
@@ -68,7 +69,7 @@ class mainlistener implements EventSubscriberInterface
 				$day = $this->request->variable('bday_day', 0);
 				$month = $this->request->variable('bday_month', 0);
 				$year = $this->request->variable('bday_year', 0);
-				$this->template->assign_var('IS_BIRTHDAY_REQUIRE', '1');
+
 				$s_birthday_day_options = '<option value="0"' . (($day == 0) ? ' selected="selected"' : '') . '>--</option>';
 				for ($i = 1; $i < 32; $i++)
 				{
@@ -96,17 +97,56 @@ class mainlistener implements EventSubscriberInterface
 					'S_BIRTHDAY_MONTH_OPTIONS'      => $s_birthday_month_options,
 					'S_BIRTHDAY_YEAR_OPTIONS'       => $s_birthday_year_options,
 					'S_BIRTHDAYS_ENABLED'           => true,
+					'S_MIN_BIRTHDAY'				=> $this->config['birthday_min_age'],
+					'IS_BIRTHDAY_REQUIRE'	=>	true,
 				));
 
 			}
 		}
 	}
 	
+	public function user_add_modify($event)
+	{
+		//let's test age
+		$day = $this->request->variable('bday_day', 0);
+		$month = $this->request->variable('bday_month', 0);
+		$year = $this->request->variable('bday_year', 0);
+		
+		if ($day === 0 OR $month === 0 OR $year === 0)
+		{
+			trigger_error('NO_RESULTS');
+		}
+
+		
+		$this->var_display($event['sql_ary']);
+		die();
+	}
 	public function var_display($event)
 	{
 		echo '<pre>';
 		print_r($event);
 		echo '</pre>';
+	}
+	
+	public function age ($user_birthday)
+	{
+		list($bday_day, $bday_month, $bday_year) = array_map('intval', explode('-', $data['user_birthday']));
+		if ($bday_year)
+		{
+			$now = $user->create_datetime();
+			$now = phpbb_gmgetdate($now->getTimestamp() + $now->getOffset());
+
+			$diff = $now['mon'] - $bday_month;
+			if ($diff == 0)
+			{
+				$diff = ($now['mday'] - $bday_day < 0) ? 1 : 0;
+			}
+			else
+			{
+				$diff = ($diff < 0) ? 1 : 0;
+			}
+			$age = max(0, (int) ($now['year'] - $bday_year - $diff));
+		}
 	}
 	
 }
