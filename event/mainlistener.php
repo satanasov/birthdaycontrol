@@ -21,8 +21,9 @@ class mainlistener implements EventSubscriberInterface
 	static public function getSubscribedEvents()
     {
 		return array(
-			'core.common'	=>	'default_configs',
+			//'core.common'	=>	'default_configs',
 			'core.user_add_modify_data'	=> 'user_add_modify',
+			'core.user_setup'		=> 'default_configs',
 		);
     }
 	
@@ -59,8 +60,18 @@ class mainlistener implements EventSubscriberInterface
 		$this->table_prefix = $table_prefix;
 	}
 
+		public function load_language_on_setup($event){
+			
+		}
+	
 	public function default_configs($event)
 	{
+		$lang_set_ext = $event['lang_set_ext'];
+		$lang_set_ext[] = array(
+			'ext_name' => 'anavaro/birthdaycontrol',
+			'lang_set' => 'ucp_lang',
+		);
+		$event['lang_set_ext'] = $lang_set_ext;
 		$register = ($this->request->variable('mode', '') == 'register' ? true : false);
 		if ($register)
 		{
@@ -69,6 +80,26 @@ class mainlistener implements EventSubscriberInterface
 				$day = $this->request->variable('bday_day', 0);
 				$month = $this->request->variable('bday_month', 0);
 				$year = $this->request->variable('bday_year', 0);
+				
+				$agreed = ($this->request->variable('agreed', '') ? true : false);
+				if ($agreed)
+				{
+					if ($day === 0 OR $month === 0 OR $year === 0)
+					{
+						trigger_error('BDAY_NO_DATE');
+					}
+
+					else 
+					{
+						$user_birthday = sprintf('%2d-%2d-%4d', trim($day), trim($month), trim($year));
+					}
+					
+					$age = $this->age($user_birthday);
+					if ($age < $this->config['birthday_min_age'])
+					{
+						trigger_error(sprintf('BDAY_TO_YOUNG', $this->config['birthday_min_age']));
+					}
+				}
 
 				$s_birthday_day_options = '<option value="0"' . (($day == 0) ? ' selected="selected"' : '') . '>--</option>';
 				for ($i = 1; $i < 32; $i++)
@@ -91,6 +122,8 @@ class mainlistener implements EventSubscriberInterface
 					$s_birthday_year_options .= "<option value=\"$i\"$selected>$i</option>";
 				}
 				unset($now);
+				
+				
 
 				$this->template->assign_vars(array(
 					'S_BIRTHDAY_DAY_OPTIONS'        => $s_birthday_day_options,
@@ -101,6 +134,28 @@ class mainlistener implements EventSubscriberInterface
 					'IS_BIRTHDAY_REQUIRE'	=>	true,
 				));
 
+			}
+		}
+		
+		$profile = ($this->request->variable('mode', '') == 'profile_info' ? true : false);
+		if ($profile)
+		{
+
+			$day = $this->request->variable('bday_day', 0);
+			$month = $this->request->variable('bday_month', 0);
+			$year = $this->request->variable('bday_year', 0);
+			
+			if ($day === 0 OR $month === 0 OR $year === 0)
+			{
+				trigger_error('BDAY_NO_DATE');
+			}
+
+			$user_birthday = sprintf('%2d-%2d-%4d', trim($day), trim($month), trim($year));
+
+			$age = $this->age($user_birthday);
+			if ($age < $this->config['birthday_min_age'])
+			{
+				trigger_error(sprintf('BDAY_TO_YOUNG', 18));
 			}
 		}
 	}
@@ -125,7 +180,7 @@ class mainlistener implements EventSubscriberInterface
 		$age = $this->age($user_birthday);
 		if ($age < $this->config['birthday_min_age'])
 		{
-			trigger_error('BDAY_TO_YOUNG');
+			trigger_error(sprintf('BDAY_TO_YOUNG', $this->config['birthday_min_age']));
 		}
 		else
 		{
