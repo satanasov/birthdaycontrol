@@ -114,13 +114,27 @@ class mainlistener implements EventSubscriberInterface
 		
 		if ($day === 0 OR $month === 0 OR $year === 0)
 		{
-			trigger_error('NO_RESULTS');
+			trigger_error('BDAY_NO_DATE');
 		}
 
+		else 
+		{
+			$user_birthday = sprintf('%2d-%2d-%4d', trim($day), trim($month), trim($year));
+		}
 		
-		$this->var_display($event['sql_ary']);
-		die();
+		$age = $this->age($user_birthday);
+		if ($age < $this->config['birthday_min_age'])
+		{
+			trigger_error('BDAY_TO_YOUNG');
+		}
+		else
+		{
+			$input_array = $event['sql_ary'];
+			$input_array['user_birthday'] = $user_birthday;
+			$event['sql_ary'] = $input_array;
+		}
 	}
+	
 	public function var_display($event)
 	{
 		echo '<pre>';
@@ -130,10 +144,10 @@ class mainlistener implements EventSubscriberInterface
 	
 	public function age ($user_birthday)
 	{
-		list($bday_day, $bday_month, $bday_year) = array_map('intval', explode('-', $data['user_birthday']));
+		list($bday_day, $bday_month, $bday_year) = array_map('intval', explode('-', $user_birthday));
 		if ($bday_year)
 		{
-			$now = $user->create_datetime();
+			$now = $this->user->create_datetime();
 			$now = phpbb_gmgetdate($now->getTimestamp() + $now->getOffset());
 
 			$diff = $now['mon'] - $bday_month;
@@ -147,6 +161,7 @@ class mainlistener implements EventSubscriberInterface
 			}
 			$age = max(0, (int) ($now['year'] - $bday_year - $diff));
 		}
+		return $age;
 	}
 	
 }
