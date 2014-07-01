@@ -21,7 +21,6 @@ class mainlistener implements EventSubscriberInterface
 	static public function getSubscribedEvents()
     {
 		return array(
-			//'core.common'	=>	'default_configs',
 			'core.user_add_modify_data'	=> 'user_add_modify',
 			'core.user_setup'		=> 'default_configs',
 		);
@@ -60,23 +59,15 @@ class mainlistener implements EventSubscriberInterface
 		$this->table_prefix = $table_prefix;
 	}
 
-		public function load_language_on_setup($event){
-			
-		}
 	
 	public function default_configs($event)
 	{
-		$lang_set_ext = $event['lang_set_ext'];
-		$lang_set_ext[] = array(
-			'ext_name' => 'anavaro/birthdaycontrol',
-			'lang_set' => 'ucp_lang',
-		);
-		$event['lang_set_ext'] = $lang_set_ext;
 		$register = ($this->request->variable('mode', '') == 'register' ? true : false);
 		if ($register)
 		{
 			if ($this->config['birthday_require'])
 			{
+				include ($this->root_path . 'ext/anavaro/birthdaycontrol/language/'.$this->user->data['user_lang'].'/ucp_lang.php');
 				$day = $this->request->variable('bday_day', 0);
 				$month = $this->request->variable('bday_month', 0);
 				$year = $this->request->variable('bday_year', 0);
@@ -86,7 +77,7 @@ class mainlistener implements EventSubscriberInterface
 				{
 					if ($day === 0 OR $month === 0 OR $year === 0)
 					{
-						trigger_error('BDAY_NO_DATE');
+						trigger_error($lang['BDAY_NO_DATE']);
 					}
 
 					else 
@@ -97,10 +88,9 @@ class mainlistener implements EventSubscriberInterface
 					$age = $this->age($user_birthday);
 					if ($age < $this->config['birthday_min_age'])
 					{
-						trigger_error(sprintf('BDAY_TO_YOUNG', $this->config['birthday_min_age']));
+						trigger_error(sprintf($lang['BDAY_TO_YOUNG'], $this->config['birthday_min_age']));
 					}
 				}
-
 				$s_birthday_day_options = '<option value="0"' . (($day == 0) ? ' selected="selected"' : '') . '>--</option>';
 				for ($i = 1; $i < 32; $i++)
 				{
@@ -140,14 +130,14 @@ class mainlistener implements EventSubscriberInterface
 		$profile = ($this->request->variable('mode', '') == 'profile_info' ? true : false);
 		if ($profile)
 		{
-
+			include ($this->root_path . 'ext/anavaro/birthdaycontrol/language/'.$this->user->data['user_lang'].'/ucp_lang.php');
 			$day = $this->request->variable('bday_day', 0);
 			$month = $this->request->variable('bday_month', 0);
 			$year = $this->request->variable('bday_year', 0);
 			
 			if ($day === 0 OR $month === 0 OR $year === 0)
 			{
-				trigger_error('BDAY_NO_DATE');
+				trigger_error($lang['BDAY_NO_DATE']);
 			}
 
 			$user_birthday = sprintf('%2d-%2d-%4d', trim($day), trim($month), trim($year));
@@ -155,7 +145,7 @@ class mainlistener implements EventSubscriberInterface
 			$age = $this->age($user_birthday);
 			if ($age < $this->config['birthday_min_age'])
 			{
-				trigger_error(sprintf('BDAY_TO_YOUNG', 18));
+				trigger_error(sprintf($lang['BDAY_TO_YOUNG'], $this->config['birthday_min_age']));
 			}
 		}
 	}
@@ -180,7 +170,7 @@ class mainlistener implements EventSubscriberInterface
 		$age = $this->age($user_birthday);
 		if ($age < $this->config['birthday_min_age'])
 		{
-			trigger_error(sprintf('BDAY_TO_YOUNG', $this->config['birthday_min_age']));
+			trigger_error(sprintf($lang['BDAY_TO_YOUNG'], $this->config['birthday_min_age']));
 		}
 		else
 		{
