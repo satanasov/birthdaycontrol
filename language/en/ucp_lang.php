@@ -22,8 +22,8 @@ if (empty($lang) || !is_array($lang))
 }
 
 $lang = array_merge($lang, array(
-	'BDAY_NO_DATE'	=> 'Моля изберете дата на раждане. Не може датата на раждане да е празна.',
-	'BDAY_TO_YOUNG'	=> 'Вие нямате право да се регистрирате в този форум. <br /> Форума е за лица над %1$d години.',
-	'BC_SHOW_BDAY'	=> 'Показвай възраст',
+	'BDAY_NO_DATE'	=> 'Please select a date of birth. You can not register if you do not add day of birth.',
+	'BDAY_TO_YOUNG'	=> 'You are not old enough to register to this board. <br /> This board has minum age of %1$d years.',
+	'BC_SHOW_BDAY'	=> 'Show age',
 	'BDAY_NA'	=> 'n/a',
 ));

@@ -18,11 +18,17 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class mainlistener implements EventSubscriberInterface
 {	
+	protected $bday_array;
+	
 	static public function getSubscribedEvents()
     {
 		return array(
 			'core.user_add_modify_data'	=> 'user_add_modify',
 			'core.user_setup'		=> 'default_configs',
+			'core.memberlist_prepare_profile_data'	=> 'viewprofile',
+			'core.viewtopic_get_post_data'	=> 'sql_ary_modify',
+			'core.viewtopic_post_rowset_data'	=> 'add_data_to_row',
+			'core.viewtopic_modify_post_row'	=>	'modify_post_row',
 		);
     }
 	
@@ -63,72 +69,67 @@ class mainlistener implements EventSubscriberInterface
 	public function default_configs($event)
 	{
 		$register = ($this->request->variable('mode', '') == 'register' ? true : false);
-		if ($register)
+		if ($register AND $this->config['birthday_require'])
 		{
-			if ($this->config['birthday_require'])
+			include ($this->root_path . 'ext/anavaro/birthdaycontrol/language/'.$this->user->data['user_lang'].'/ucp_lang.php');
+			$day = $this->request->variable('bday_day', 0);
+			$month = $this->request->variable('bday_month', 0);
+			$year = $this->request->variable('bday_year', 0);
+			
+			$agreed = ($this->request->variable('agreed', '') ? true : false);
+			if ($agreed)
 			{
-				include ($this->root_path . 'ext/anavaro/birthdaycontrol/language/'.$this->user->data['user_lang'].'/ucp_lang.php');
-				$day = $this->request->variable('bday_day', 0);
-				$month = $this->request->variable('bday_month', 0);
-				$year = $this->request->variable('bday_year', 0);
-				
-				$agreed = ($this->request->variable('agreed', '') ? true : false);
-				if ($agreed)
+				if ($day === 0 OR $month === 0 OR $year === 0)
 				{
-					if ($day === 0 OR $month === 0 OR $year === 0)
-					{
-						trigger_error($lang['BDAY_NO_DATE']);
-					}
+					trigger_error($lang['BDAY_NO_DATE']);
+				}
 
-					else 
-					{
-						$user_birthday = sprintf('%2d-%2d-%4d', trim($day), trim($month), trim($year));
-					}
+				else 
+				{
+					$user_birthday = sprintf('%2d-%2d-%4d', trim($day), trim($month), trim($year));
+				}
 					
-					$age = $this->age($user_birthday);
-					if ($age < $this->config['birthday_min_age'])
-					{
-						trigger_error(sprintf($lang['BDAY_TO_YOUNG'], $this->config['birthday_min_age']));
-					}
-				}
-				$s_birthday_day_options = '<option value="0"' . (($day == 0) ? ' selected="selected"' : '') . '>--</option>';
-				for ($i = 1; $i < 32; $i++)
+				$age = $this->age($user_birthday);
+				if ($age < $this->config['birthday_min_age'])
 				{
-					$selected = ($i == $day) ? ' selected="selected"' : '';
-					$s_birthday_day_options .= "<option value=\"$i\"$selected>$i</option>";
+					trigger_error(sprintf($lang['BDAY_TO_YOUNG'], $this->config['birthday_min_age']));
 				}
-				$s_birthday_month_options = '<option value="0"' . (($month == 0) ? ' selected="selected"' : '') . '>--</option>';
-				for ($i = 1; $i < 13; $i++)
-				{
-					$selected = ($i == $month) ? ' selected="selected"' : '';
-					$s_birthday_month_options .= "<option value=\"$i\"$selected>$i</option>";
-				}
-				$s_birthday_year_options = '';
-				$now = getdate();
-				$s_birthday_year_options = '<option value="0"' . (($year == 0) ? ' selected="selected"' : '') . '>--</option>';
-				for ($i = $now['year'] - 100; $i <= $now['year']; $i++)
-				{
-					$selected = ($i == $year) ? ' selected="selected"' : '';
-					$s_birthday_year_options .= "<option value=\"$i\"$selected>$i</option>";
-				}
-				unset($now);
-				
-				
-
-				$this->template->assign_vars(array(
-					'S_BIRTHDAY_DAY_OPTIONS'        => $s_birthday_day_options,
-					'S_BIRTHDAY_MONTH_OPTIONS'      => $s_birthday_month_options,
-					'S_BIRTHDAY_YEAR_OPTIONS'       => $s_birthday_year_options,
-					'S_BIRTHDAYS_ENABLED'           => true,
-					'S_MIN_BIRTHDAY'				=> $this->config['birthday_min_age'],
-					'IS_BIRTHDAY_REQUIRE'	=>	true,
-				));
-
 			}
+			$s_birthday_day_options = '<option value="0"' . (($day == 0) ? ' selected="selected"' : '') . '>--</option>';
+			for ($i = 1; $i < 32; $i++)
+			{
+				$selected = ($i == $day) ? ' selected="selected"' : '';
+				$s_birthday_day_options .= "<option value=\"$i\"$selected>$i</option>";
+			}
+			$s_birthday_month_options = '<option value="0"' . (($month == 0) ? ' selected="selected"' : '') . '>--</option>';
+			for ($i = 1; $i < 13; $i++)
+			{
+				$selected = ($i == $month) ? ' selected="selected"' : '';
+				$s_birthday_month_options .= "<option value=\"$i\"$selected>$i</option>";
+			}
+			$s_birthday_year_options = '';
+			$now = getdate();
+			$s_birthday_year_options = '<option value="0"' . (($year == 0) ? ' selected="selected"' : '') . '>--</option>';
+			for ($i = $now['year'] - 100; $i <= $now['year']; $i++)
+			{
+				$selected = ($i == $year) ? ' selected="selected"' : '';
+				$s_birthday_year_options .= "<option value=\"$i\"$selected>$i</option>";
+			}
+			unset($now);
+			
+			$this->template->assign_vars(array(
+				'S_BIRTHDAY_DAY_OPTIONS'        => $s_birthday_day_options,
+				'S_BIRTHDAY_MONTH_OPTIONS'      => $s_birthday_month_options,
+				'S_BIRTHDAY_YEAR_OPTIONS'       => $s_birthday_year_options,
+				'S_BIRTHDAYS_ENABLED'           => true,
+				'S_MIN_BIRTHDAY'				=> $this->config['birthday_min_age'],
+				'IS_BIRTHDAY_REQUIRE'	=>	true,
+			));
 		}
 		
 		$profile = ($this->request->variable('mode', '') == 'profile_info' ? true : false);
-		if ($profile)
+		$has_token = ($this->request->variable('form_token', '') ? true : false); 
+		if ($profile AND $has_token AND $this->config['birthday_require'])
 		{
 			include ($this->root_path . 'ext/anavaro/birthdaycontrol/language/'.$this->user->data['user_lang'].'/ucp_lang.php');
 			$day = $this->request->variable('bday_day', 0);
@@ -148,18 +149,20 @@ class mainlistener implements EventSubscriberInterface
 				trigger_error(sprintf($lang['BDAY_TO_YOUNG'], $this->config['birthday_min_age']));
 			}
 		}
+		$this->user->add_lang_ext('anavaro/birthdaycontrol', 'ucp_lang');
 	}
 	
 	public function user_add_modify($event)
 	{
 		//let's test age
+		$this->user->add_lang_ext('anavaro/birthdaycontrol', 'ucp_lang');
 		$day = $this->request->variable('bday_day', 0);
 		$month = $this->request->variable('bday_month', 0);
 		$year = $this->request->variable('bday_year', 0);
 		
 		if ($day === 0 OR $month === 0 OR $year === 0)
 		{
-			trigger_error('BDAY_NO_DATE');
+			trigger_error($this->user->lang['BDAY_NO_DATE']);
 		}
 
 		else 
@@ -170,7 +173,7 @@ class mainlistener implements EventSubscriberInterface
 		$age = $this->age($user_birthday);
 		if ($age < $this->config['birthday_min_age'])
 		{
-			trigger_error(sprintf($lang['BDAY_TO_YOUNG'], $this->config['birthday_min_age']));
+			trigger_error(sprintf($this->user->lang['BDAY_TO_YOUNG'], $this->config['birthday_min_age']));
 		}
 		else
 		{
@@ -180,6 +183,55 @@ class mainlistener implements EventSubscriberInterface
 		}
 	}
 	
+	public function viewprofile($event)
+	{
+		$this->user->add_lang_ext('anavaro/birthdaycontrol', 'ucp_lang');
+		$view_user = $event['data'];
+		$template_data = $event['template_data'];
+		
+		//Let's get state of bc_show_bday
+		
+		$sql = 'SELECT pf_bc_show_bday FROM ' . $this->table_prefix . 'profile_fields_data WHERE user_id = ' . $view_user['user_id'];
+		$result = $this->db->sql_query($sql);
+		
+		$state = (int) $this->db->sql_fetchfield('pf_bc_show_bday');
+		
+		if ($state == 3)
+		{
+			$template_data['AGE'] = $this->user->lang['BDAY_NA'];
+			$event['template_data'] = $template_data;
+		}
+		
+	}
+
+	//Let's modidfy postrow sql_ary
+	public function sql_ary_modify($event)
+	{
+		$sql_ary = $event['sql_ary'];
+		
+		$sql_ary['SELECT'] .= ', uc.pf_bc_show_bday';
+		$sql_ary['FROM'][$this->table_prefix . 'profile_fields_data']	= 'uc';
+		$sql_ary['WHERE'] .= ' AND u.user_id = uc.user_id';
+		
+		$event['sql_ary'] = $sql_ary;
+	}
+	
+	public function add_data_to_row($event)
+	{
+		$rowset_data = $event['rowset_data'];
+		$rowset_data['pf_bc_show_bday'] = $event['row']['pf_bc_show_bday'];
+		$event['rowset_data'] = $rowset_data;
+	}
+	
+	public function modify_post_row($event)
+	{
+		if ($event['row']['pf_bc_show_bday'] == 2 AND $this->config['birthday_show_post'])
+		{
+			$post_row = $event['post_row'];
+			$post_row['AGE'] = $event['user_poster_data']['age'];
+			$event['post_row'] = $post_row;
+		}
+	}
 	public function var_display($event)
 	{
 		echo '<pre>';

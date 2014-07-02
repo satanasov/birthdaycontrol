@@ -31,13 +31,6 @@ class m2_create_cpf extends \phpbb\db\migration\profilefield_base_migration
 		);
 	}
 	
-	public function revert_data()
-	{
-		return array(
-			array('custom', array(array($this, 'clean_cpf_db_entries'))),
-		);
-	}
-	
 	protected $profilefield_name = 'bc_show_bday';
 
 	protected $profilefield_database_type = array('UINT:2', 2);
