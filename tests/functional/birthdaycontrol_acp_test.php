@@ -24,7 +24,7 @@ class birthdaycontrol_acp_test extends birthdaycontrol_base
 	/**
 	* @dataProvider acp_pages_data
 	*/
-	public function test_acp_pages()
+	public function test_acp_pages($mode)
 	{
 		$this->login();
 		$this->admin_login();
