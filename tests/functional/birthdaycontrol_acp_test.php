@@ -29,7 +29,7 @@ class birthdaycontrol_acp_test extends birthdaycontrol_base
 		$this->login();
 		$this->admin_login();
 
-		$this->add_lang_ext('anavar/birthdaycontrol', 'info_acp_birthdaycontrol');
+		$this->add_lang_ext('anavaro/birthdaycontrol', 'info_acp_birthdaycontrol');
 
 		$crawler = self::request('GET', 'adm/index.php?i=' . $mode . '&sid=' . $this->sid);
 		$this->assertContainsLang('BIRTHDAY_REQUIRE', $crawler->text());
