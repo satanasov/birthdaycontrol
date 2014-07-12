@@ -15,6 +15,13 @@ namespace anavaro\birthdaycontrol\tests\functional;
 */
 class birthdaycontrol_acp_test extends birthdaycontrol_base
 {
+	public function acp_pages_data()
+	{
+		return array(
+			array('1'), // Load the main ACP page
+			array('acp_board&mode=settings'), // Load the advanced forum settings ACP page
+		);
+	}
 	/**
 	* @dataProvider acp_pages_data
 	*/
@@ -25,7 +32,7 @@ class birthdaycontrol_acp_test extends birthdaycontrol_base
 
 		$this->add_lang_ext('anavar/birthdaycontrol', 'info_acp_birthdaycontrol');
 
-		$crawler = self::request('GET', 'adm/index.php?i=acp_board&amp;mode=settings&sid=' . $this->sid);
+		$crawler = self::request('GET', 'adm/index.php?i=' . $mode . '&sid=' . $this->sid);
 		$this->assertContainsLang('ALLOW_BIRTHDAYS', $crawler->text());
 		$this->assertContainsLang('BIRTHDAY_REQUIRE', $crawler->text());
 		$this->assertContainsLang('BIRTHDAY_MIN_AGE', $crawler->text());
