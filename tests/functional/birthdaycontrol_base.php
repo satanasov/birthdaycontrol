@@ -58,4 +58,19 @@ class birthdaycontrol_base extends \phpbb_functional_test_case
 
 		$this->purge_cache();
 	}
+	/**
+	* Set age (default is 0)
+	*/
+	public function set_birthday_min_age($var)
+	{
+		$this->get_db();
+
+		$sql = "UPDATE phpbb_config
+			SET config_value = $var
+			WHERE config_name = 'birthday_min_age'";
+
+		$this->db->sql_query($sql);
+
+		$this->purge_cache();
+	}
 }
