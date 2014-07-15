@@ -26,4 +26,5 @@ $lang = array_merge($lang, array(
 	'BDAY_TO_YOUNG'	=> 'You are not old enough to register to this board. <br /> This board has minum age of %1$d years.',
 	'BC_SHOW_BDAY'	=> 'Show age',
 	'BDAY_NA'	=> 'n/a',
+
 ));

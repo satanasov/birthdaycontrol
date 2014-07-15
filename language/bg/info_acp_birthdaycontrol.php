@@ -28,4 +28,5 @@ $lang = array_merge($lang, array(
 	'BIRTHDAY_MIN_AGE_EXPLAIN'	=> 'Минимална изисквана възраст за регистрация.',
 	'BIRTHDAY_SHOW_POST'	=> 'Показвай възраст в постовете',
 	'BIRTHDAY_SHOW_POST_EXPLAIN'	=> 'Показвай възрастта на потребителя в постовете му.',
+
 ));

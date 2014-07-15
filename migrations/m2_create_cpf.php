@@ -22,7 +22,7 @@ class m2_create_cpf extends \phpbb\db\migration\profilefield_base_migration
 			'\anavaro\birthdaycontrol\migrations\m1_set_configs',
 		);
 	}
-	
+
 	public function update_data()
 	{
 		return array(
@@ -30,7 +30,7 @@ class m2_create_cpf extends \phpbb\db\migration\profilefield_base_migration
 			array('custom', array(array($this, 'create_language_entries'))),
 		);
 	}
-	
+
 	protected $profilefield_name = 'bc_show_bday';
 
 	protected $profilefield_database_type = array('UINT:2', 2);
@@ -59,7 +59,7 @@ class m2_create_cpf extends \phpbb\db\migration\profilefield_base_migration
 		'field_contact_desc'	=> '',
 		'field_contact_url'	=> '',
 	);
-	
+
 	protected $profilefield_language_data = array(
 		array(
 			'option_id'	=> 1,
@@ -72,4 +72,6 @@ class m2_create_cpf extends \phpbb\db\migration\profilefield_base_migration
 			'lang_value'	=> 'No',
 		),
 	);
+
 }
+

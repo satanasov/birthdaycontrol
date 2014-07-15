@@ -28,4 +28,5 @@ $lang = array_merge($lang, array(
 	'BIRTHDAY_MIN_AGE_EXPLAIN'	=> 'Require minimum age to register in this board',
 	'BIRTHDAY_SHOW_POST'	=> 'Show age in posts',
 	'BIRTHDAY_SHOW_POST_EXPLAIN'	=> 'Show user age in small profile in postview.',
+
 ));

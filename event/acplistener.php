@@ -17,15 +17,14 @@ namespace anavaro\birthdaycontrol\event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class acplistener implements EventSubscriberInterface
-{	
+{
 	static public function getSubscribedEvents()
-    {
+	{
 		return array(
 			'core.acp_board_config_edit_add'	=>	'add_options',
 		);
-    }
-	
-	
+	}
+
 	/**
 	* Constructor
 	* NOTE: The parameters of this method must match in order and type with
@@ -77,7 +76,7 @@ class acplistener implements EventSubscriberInterface
 
 			// Insert my config vars after...
 			$insert_before = 'WARNINGS';
-			
+
 			// Rebuild new config var array
 			$position = array_search($insert_before, array_keys($display_vars['vars'])) - 1;
 			$display_vars['vars'] = array_merge(
@@ -89,14 +88,14 @@ class acplistener implements EventSubscriberInterface
 			// Update the display_vars  event with the new array
 			$event['display_vars'] = array('title' => $display_vars['title'], 'vars' => $display_vars['vars']);
 		}
-		
+
 	}
-	
+
 	public function var_display($event)
 	{
 		echo '<pre>';
 		print_r($event);
 		echo '</pre>';
 	}
-	
+
 }
