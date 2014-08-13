@@ -74,4 +74,3 @@ class m2_create_cpf extends \phpbb\db\migration\profilefield_base_migration
 	);
 
 }
-

@@ -28,4 +28,3 @@ $lang = array_merge($lang, array(
 	'BDAY_NA'	=> 'n/a',
 
 ));
-

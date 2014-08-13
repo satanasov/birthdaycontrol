@@ -29,4 +29,3 @@ class m1_set_configs extends \phpbb\db\migration\migration
 	}
 
 }
-

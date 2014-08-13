@@ -126,7 +126,7 @@ class mainlistener implements EventSubscriberInterface
 		}
 
 		$profile = ($this->request->variable('mode', '') == 'profile_info' ? true : false);
-		$has_token = ($this->request->variable('form_token', '') ? true : false); 
+		$has_token = ($this->request->variable('form_token', '') ? true : false);
 		if ($profile && $has_token && $this->config['birthday_require'])
 		{
 			include ($this->root_path . 'ext/anavaro/birthdaycontrol/language/'.$this->user->data['user_lang'].'/ucp_lang.php');
