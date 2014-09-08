@@ -22,6 +22,7 @@ if (empty($lang) || !is_array($lang))
 }
 
 $lang = array_merge($lang, array(
+	'BIRTHDAY_CONTROL'	=> 'Control birthday requiriments',
 	'BIRTHDAY_REQUIRE'	=> 'Require birthday',
 	'BIRTHDAY_REQUIRE_EXPLAIN'	=> 'Require user to enter age to register here',
 	'BIRTHDAY_MIN_AGE'	=> 'Minimum age',

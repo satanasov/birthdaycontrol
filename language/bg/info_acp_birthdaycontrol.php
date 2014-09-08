@@ -22,6 +22,7 @@ if (empty($lang) || !is_array($lang))
 }
 
 $lang = array_merge($lang, array(
+	'BIRTHDAY_CONTROL'	=> 'Настройки на възрастта',
 	'BIRTHDAY_REQUIRE'	=> 'Изисквай възраст',
 	'BIRTHDAY_REQUIRE_EXPLAIN'	=> 'Изисвай възраст за регистрация на потребителя',
 	'BIRTHDAY_MIN_AGE'	=> 'Минимална възраст',

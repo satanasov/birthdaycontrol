@@ -42,19 +42,9 @@ class acplistener implements EventSubscriberInterface
 	* @param string			$root_path	phpBB root path
 	* @param string			$php_ext	phpEx
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\cache\service $cache, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, \phpbb\controller\helper $helper, $root_path, $php_ext, $table_prefix)
+	public function __construct(\phpbb\controller\helper $helper)
 	{
-		$this->auth = $auth;
-		$this->cache = $cache;
-		$this->config = $config;
-		$this->db = $db;
-		$this->request = $request;
-		$this->template = $template;
-		$this->user = $user;
 		$this->helper = $helper;
-		$this->root_path = $root_path;
-		$this->php_ext = $php_ext;
-		$this->table_prefix = $table_prefix;
 	}
 
 	public function add_options($event)
@@ -74,19 +64,10 @@ class acplistener implements EventSubscriberInterface
 				'birthday_show_post'	=> array('lang' => 'BIRTHDAY_SHOW_POST', 'validate' => 'bool', 'type' => 'radio:yes_no', 'explain' => true),
 			);
 
-			// Insert my config vars after...
-			$insert_before = 'WARNINGS';
-
-			// Rebuild new config var array
-			$position = array_search($insert_before, array_keys($display_vars['vars'])) - 1;
-			$display_vars['vars'] = array_merge(
-				array_slice($display_vars['vars'], 0, $position),
-				$my_config_vars,
-				array_slice($display_vars['vars'], $position)
-			);
-
+			$display_vars['vars'] = phpbb_insert_config_array($display_vars['vars'], $my_config_vars, array('after' =>'warnings_expire_days'));
 			// Update the display_vars  event with the new array
 			$event['display_vars'] = array('title' => $display_vars['title'], 'vars' => $display_vars['vars']);
+			$this->var_display($display_vars['vars']);
 		}
 
 	}
