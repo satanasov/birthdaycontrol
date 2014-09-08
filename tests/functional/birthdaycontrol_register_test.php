@@ -25,7 +25,7 @@ class birthdaycontrol_register_test extends birthdaycontrol_base
 		
 		$crawler = self::request('GET', 'ucp.php?mode=register&sid='. $this->sid);
 		
-		$this->assertContainsLang('BIRTH_DATE', $crawler->text());
+		$this->assertContainsLang('BIRTH_DATE', $crawler->filter('html')->text());
 		
 		$form = $crawler->selectButton($this->lang('AGREE'))->form();
 		
