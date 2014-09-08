@@ -31,7 +31,7 @@ class birthdaycontrol_register_test extends birthdaycontrol_base
 		
 		$form['bday_day'] = 2;
 		$form['bday_month'] = 5;
-		$form['bday_month'] = $date('Y') - 13;
+		$form['bday_month'] = date('Y') - 13;
 		
 		$crawler = self::submit($form);
 		
