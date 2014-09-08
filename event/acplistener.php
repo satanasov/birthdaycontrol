@@ -68,10 +68,10 @@ class acplistener implements EventSubscriberInterface
 			// Define my new config vars
 			$my_config_vars = array(
 				'legend10'	=> 'BIRTHDAY_CONTROL',
-				'allow_birthdays' => array('lang' => 'ALLOW_BIRTHDAYS', 'validate' => 'bool', 'type' => 'radio: yes_no', 'explain' => true),
-				'birthday_require' => array('lang' => 'BIRTHDAY_REQUIRE', 'validate' => 'bool', 'type' => 'radio: yes_no', 'explain' => true),
+				'allow_birthdays' => array('lang' => 'ALLOW_BIRTHDAYS', 'validate' => 'bool', 'type' => 'radio:yes_no', 'explain' => true),
+				'birthday_require' => array('lang' => 'BIRTHDAY_REQUIRE', 'validate' => 'bool', 'type' => 'radio:yes_no', 'explain' => true),
 				'birthday_min_age' => array('lang' => 'BIRTHDAY_MIN_AGE', 'validate' => 'int:0:99', 'type' => 'number:0:99', 'explain' => true),
-				'birthday_show_post'	=> array('lang' => 'BIRTHDAY_SHOW_POST', 'validate' => 'bool', 'type' => 'radio: yes_no', 'explain' => true),
+				'birthday_show_post'	=> array('lang' => 'BIRTHDAY_SHOW_POST', 'validate' => 'bool', 'type' => 'radio:yes_no', 'explain' => true),
 			);
 
 			// Insert my config vars after...
