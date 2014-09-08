@@ -21,6 +21,7 @@ class birthdaycontrol_register_test extends birthdaycontrol_base
 		$this->set_birthday_min_age(18);
 		
 		$this->add_lang_ext('anavaro/birthdaycontrol', 'ucp_lang');
+		$this->add_lang('ucp');
 		
 		$crawler = self::request('GET', 'ucp.php?mode=register&sid='. $this->sid);
 		
@@ -43,6 +44,7 @@ class birthdaycontrol_register_test extends birthdaycontrol_base
 		$this->set_birthday_min_age(18);
 		
 		$this->add_lang_ext('anavaro/birthdaycontrol', 'ucp_lang');
+		$this->add_lang('ucp');
 		
 		$crawler = self::request('GET', 'ucp.php?mode=register&sid='. $this->sid);
 		
