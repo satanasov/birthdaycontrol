@@ -90,7 +90,7 @@ class mainlistener implements EventSubscriberInterface
 				$age = $this->age($user_birthday);
 				if ($age < $this->config['birthday_min_age'])
 				{
-					trigger_error(sprintf($lang['BDAY_TO_YOUNG'], $this->config['birthday_min_age']), E_USER_WARNING);
+					trigger_error(sprintf($lang['BDAY_TO_YOUNG'], $this->config['birthday_min_age']));
 				}
 			}
 			$s_birthday_day_options = '<option value="0"' . (($day == 0) ? ' selected="selected"' : '') . '>--</option>';
