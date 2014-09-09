@@ -73,4 +73,37 @@ class birthdaycontrol_base extends \phpbb_functional_test_case
 
 		$this->purge_cache();
 	}
+	/**
+	* Change show birthday
+	*/
+	public function set_show_birthday($userid, $state)
+	{
+		$sql = "UPDATE phpbb_profile_fields_data
+			SET pf_bc_show_bday = $state
+			WHERE user_id = $userid";
+			
+		$this->db->sql_query($sql);
+
+		$this->purge_cache();
+	}
+	
+	public function get_topic_id($topic_title)
+	{
+		$sql = 'SELECT topic_id
+				FROM ' . TOPICS_TABLE . '
+				WHERE topic_title = \'' . $topic_title . '\'';
+		$result = $this->db->sql_query($sql);
+		$row = $this->db->sql_fetchrow($result);
+		return $row['topic_id'];
+	}
+	
+	public function get_user_id($username)
+	{
+		$sql = 'SELECT user_id, username
+				FROM ' . USERS_TABLE . '
+				WHERE username_clean = \''.$this->db->sql_escape(utf8_clean_string($username)).'\'';
+		$result = $this->db->sql_query($sql);
+		$row = $this->db->sql_fetchrow($result);
+		return $row['user_id'];
+	}
 }
