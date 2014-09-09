@@ -79,7 +79,7 @@ class mainlistener implements EventSubscriberInterface
 			{
 				if ($day === 0 || $month === 0 || $year === 0)
 				{
-					trigger_error($lang['BDAY_NO_DATE']);
+					trigger_error($lang['BDAY_NO_DATE'], E_USER_WARNING);
 				}
 
 				else
@@ -90,7 +90,7 @@ class mainlistener implements EventSubscriberInterface
 				$age = $this->age($user_birthday);
 				if ($age < $this->config['birthday_min_age'])
 				{
-					trigger_error(sprintf($lang['BDAY_TO_YOUNG'], $this->config['birthday_min_age']));
+					trigger_error(sprintf($lang['BDAY_TO_YOUNG'], $this->config['birthday_min_age']), E_USER_WARNING);
 				}
 			}
 			$s_birthday_day_options = '<option value="0"' . (($day == 0) ? ' selected="selected"' : '') . '>--</option>';
