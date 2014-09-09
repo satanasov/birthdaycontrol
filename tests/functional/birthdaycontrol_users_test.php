@@ -57,7 +57,7 @@ class birthdaycontrol_users_test extends birthdaycontrol_base
 		$this->add_lang('ucp');
 		$this->add_lang('common');
 		
-		$crawler = self::request('GET', 'memberlist.php?mode=viewprofile&u=' . $this->get_user_id('admin') . '&sid=' . $this->sid)
+		$crawler = self::request('GET', 'memberlist.php?mode=viewprofile&u=' . $this->get_user_id('admin') . '&sid=' . $this->sid);
 		$this->assertContainsLang('AGE', $crawler->filter('html')->text());
 		
 		$this->logout();
