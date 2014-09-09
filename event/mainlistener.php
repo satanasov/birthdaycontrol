@@ -195,7 +195,7 @@ class mainlistener implements EventSubscriberInterface
 
 		if ($state == 3)
 		{
-			$template_data['AGE'] = $this->user->lang['BDAY_NA'];
+			$template_data['AGE'] = '';
 			$event['template_data'] = $template_data;
 		}
 
