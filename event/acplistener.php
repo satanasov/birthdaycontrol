@@ -67,7 +67,7 @@ class acplistener implements EventSubscriberInterface
 			$display_vars['vars'] = phpbb_insert_config_array($display_vars['vars'], $my_config_vars, array('after' =>'warnings_expire_days'));
 			// Update the display_vars  event with the new array
 			$event['display_vars'] = array('title' => $display_vars['title'], 'vars' => $display_vars['vars']);
-			$this->var_display($display_vars['vars']);
+			//$this->var_display($display_vars['vars']);
 		}
 
 	}
