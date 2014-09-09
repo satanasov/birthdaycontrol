@@ -79,7 +79,7 @@ class mainlistener implements EventSubscriberInterface
 			{
 				if ($day === 0 || $month === 0 || $year === 0)
 				{
-					trigger_error($lang['BDAY_NO_DATE'], E_USER_WARNING);
+					trigger_error($lang['BDAY_NO_DATE']);
 				}
 
 				else
