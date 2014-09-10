@@ -15,7 +15,7 @@ namespace anavaro\birthdaycontrol\tests\functional;
 */
 class birthdaycontrol_register_test extends birthdaycontrol_base
 {
-	/*public function test_register_agreement_invalid_date()
+	public function test_register_agreement_invalid_date()
 	{
 		//firstly set all
 		$this->set_birthday_min_age(18);
@@ -54,7 +54,7 @@ class birthdaycontrol_register_test extends birthdaycontrol_base
 		$crawler = self::submit($form);
 		
 		$this->assertContainsLang('BC_SHOW_BDAY', $crawler->text());
-	}*/
+	}
 	public function test_register_agreement_valid_date()
 	{
 		$this->force_allow_birthday();

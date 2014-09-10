@@ -35,5 +35,7 @@ class birthdaycontrol_acp_test extends birthdaycontrol_base
 		$this->assertContainsLang('BIRTHDAY_REQUIRE', $crawler->text());
 		$this->assertContainsLang('BIRTHDAY_MIN_AGE', $crawler->text());
 		$this->assertContainsLang('BIRTHDAY_SHOW_POST', $crawler->text());
+		
+		$this->logout();
 	}
 }
