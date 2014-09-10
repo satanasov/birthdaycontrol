@@ -32,7 +32,7 @@ class birthdaycontrol_users_test extends birthdaycontrol_base
 		$this->add_user_group('NEWLY_REGISTERED', array('testuser1'));
 		
 	}
-	
+	/*
 	public function test_viewbday_in_topic()
 	{
 		$this->set_show_birthday($this->get_user_id('admin'), 2);
@@ -62,5 +62,5 @@ class birthdaycontrol_users_test extends birthdaycontrol_base
 		$this->assertContainsLang('AGE', $crawler->filter('html')->text());
 		
 		$this->logout();
-	}
+	}*/
 }
