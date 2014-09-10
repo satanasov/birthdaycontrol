@@ -18,9 +18,8 @@ class birthdaycontrol_users_test extends birthdaycontrol_base
 	public function test_install_users()
 	{
 		$this->login();
-		$this->create_forum('test forum');
 		// Test creating topic and post to test
-		$post = $this->create_topic($this->get_forum_id('test forum'), 'Test Topic 1', 'This is a test topic posted by the testing framework.');
+		$post = $this->create_topic(2, 'Test Topic 1', 'This is a test topic posted by the testing framework.');
 		//$crawler = self::request('GET', "viewtopic.php?t={$post['topic_id']}&sid={$this->sid}");
 		//$post2 = $this->create_post(2, $post['topic_id'], 'Re: Test Topic 1', 'This is a test [b]post[/b] posted by the testing framework.');
 		//$crawler = self::request('GET', "viewtopic.php?t={$post2['topic_id']}&sid={$this->sid}");
