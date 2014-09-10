@@ -97,6 +97,16 @@ class birthdaycontrol_base extends \phpbb_functional_test_case
 		return $row['topic_id'];
 	}
 	
+	public function get_forum_id($forum_title)
+	{
+		$sql = 'SELECT topic_id
+				FROM ' . FORUMS_TABLE . '
+				WHERE topic_title = \'' . $forum_title . '\'';
+		$result = $this->db->sql_query($sql);
+		$row = $this->db->sql_fetchrow($result);
+		return $row['topic_id'];
+	}
+	
 	public function get_user_id($username)
 	{
 		$sql = 'SELECT user_id, username
