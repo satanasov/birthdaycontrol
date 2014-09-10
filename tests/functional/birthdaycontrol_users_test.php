@@ -34,7 +34,7 @@ class birthdaycontrol_users_test extends birthdaycontrol_base
 	
 	public function test_viewbday_in_topic()
 	{
-		$this->set_show_birthday($this->get_user_id('admin'), 1);
+		$this->set_show_birthday($this->get_user_id('admin'), 2);
 		
 		$this->login('testuser1');
 		$this->add_lang('ucp');
@@ -51,7 +51,7 @@ class birthdaycontrol_users_test extends birthdaycontrol_base
 	public function test_viewbday_in_profile()
 	{
 		
-		$this->set_show_birthday($this->get_user_id('admin'), 1);
+		$this->set_show_birthday($this->get_user_id('admin'), 2);
 		
 		$this->login('testuser1');
 		$this->add_lang('ucp');
