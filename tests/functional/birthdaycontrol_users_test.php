@@ -19,14 +19,14 @@ class birthdaycontrol_users_test extends birthdaycontrol_base
 	{
 		$this->login();
 		// Test creating topic and post to test
-		$post = $this->create_topic(2, 'Test Topic 1', 'This is a test topic posted by the testing framework.');
+		$post = $this->create_topic(1, 'Test Topic 1', 'This is a test topic posted by the testing framework.');
 		//$crawler = self::request('GET', "viewtopic.php?t={$post['topic_id']}&sid={$this->sid}");
 		//$post2 = $this->create_post(2, $post['topic_id'], 'Re: Test Topic 1', 'This is a test [b]post[/b] posted by the testing framework.');
 		//$crawler = self::request('GET', "viewtopic.php?t={$post2['topic_id']}&sid={$this->sid}");
 		
 		
 		//$this->assertContains('topic posted by', $crawler->filter('html')->text());
-		//`$this->logout();
+		$this->logout();
 	
 		$this->create_user('testuser1');
 		$this->add_user_group('NEWLY_REGISTERED', array('testuser1'));
