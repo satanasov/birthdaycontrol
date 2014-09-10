@@ -30,12 +30,12 @@ class birthdaycontrol_base extends \phpbb_functional_test_case
 	/**
 	* Allow birthday (just to be sure) 
 	*/
-	public function force_allow_birthday()
+	public function force_allow_birthday($var = 1)
 	{
 		$this->get_db();
 
 		$sql = "UPDATE phpbb_config
-			SET config_value = 1
+			SET config_value = $var
 			WHERE config_name = 'allow_birthdays'";
 
 		$this->db->sql_query($sql);
@@ -46,12 +46,12 @@ class birthdaycontrol_base extends \phpbb_functional_test_case
 	/**
 	* Require birthday (it's not required on install) 
 	*/
-	public function require_birthday()
+	public function require_birthday($var = 1)
 	{
 		$this->get_db();
 
 		$sql = "UPDATE phpbb_config
-			SET config_value = 1
+			SET config_value = $var
 			WHERE config_name = 'birthday_require'";
 
 		$this->db->sql_query($sql);
