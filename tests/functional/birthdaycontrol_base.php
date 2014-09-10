@@ -23,8 +23,8 @@ class birthdaycontrol_base extends \phpbb_functional_test_case
 	public function setUp()
 	{
 		parent::setUp();
-		$this->force_allow_birthday();
-		$this->require_birthday();
+		//$this->force_allow_birthday();
+		//$this->require_birthday();
 	}
 
 	/**
