@@ -17,6 +17,8 @@ class birthdaycontrol_register_test extends birthdaycontrol_base
 {
 	public function test_register_agreement_invalid_date()
 	{
+		$this->force_allow_birthday();
+		$this->require_birthday();
 		//firstly set all
 		$this->set_birthday_min_age(18);
 		
@@ -36,6 +38,9 @@ class birthdaycontrol_register_test extends birthdaycontrol_base
 		$crawler = self::submit($form);
 		
 		$this->assertContainsLang('BDAY_TO_YOUNG', $crawler->text());
+		
+		$this->force_allow_birthday(0);
+		$this->require_birthday(0);
 	}
 	public function test_register_agreement_no_date()
 	{
