@@ -204,38 +204,29 @@ class mainlistener implements EventSubscriberInterface
 	//Let's modidfy postrow sql_ary
 	public function sql_ary_modify($event)
 	{
-		if ($this->user->data['user_id'] != ANONYMOUS)
-		{
-			$sql_ary = $event['sql_ary'];
+		$sql_ary = $event['sql_ary'];
 
-			$sql_ary['SELECT'] .= ', uc.pf_bc_show_bday';
-			$sql_ary['FROM'][PROFILE_FIELDS_DATA_TABLE]	= 'uc';
-			$sql_ary['WHERE'] .= ' AND u.user_id = uc.user_id';
+		$sql_ary['SELECT'] .= ', uc.pf_bc_show_bday';
+		$sql_ary['FROM'][PROFILE_FIELDS_DATA_TABLE]	= 'uc';
+		$sql_ary['WHERE'] .= ' AND u.user_id = uc.user_id';
 
-			$event['sql_ary'] = $sql_ary;
-		}
+		$event['sql_ary'] = $sql_ary;
 	}
 
 	public function add_data_to_row($event)
 	{
-		if ($this->user->data['user_id'] != ANONYMOUS)
-		{
-			$rowset_data = $event['rowset_data'];
-			$rowset_data['pf_bc_show_bday'] = $event['row']['pf_bc_show_bday'];
-			$event['rowset_data'] = $rowset_data;
-		}
+		$rowset_data = $event['rowset_data'];
+		$rowset_data['pf_bc_show_bday'] = $event['row']['pf_bc_show_bday'];
+		$event['rowset_data'] = $rowset_data;
 	}
 
 	public function modify_post_row($event)
 	{
-		if ($this->user->data['user_id'] != ANONYMOUS)
+		if ($event['row']['pf_bc_show_bday'] == 2 && $this->config['birthday_show_post'])
 		{
-			if ($event['row']['pf_bc_show_bday'] == 2 && $this->config['birthday_show_post'])
-			{
-				$post_row = $event['post_row'];
-				$post_row['AGE'] = $event['user_poster_data']['age'];
-				$event['post_row'] = $post_row;
-			}
+			$post_row = $event['post_row'];
+			$post_row['AGE'] = $event['user_poster_data']['age'];
+			$event['post_row'] = $post_row;
 		}
 	}
 	public function var_display($event)
