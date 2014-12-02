@@ -42,7 +42,7 @@ class birthdaycontrol_register_test extends birthdaycontrol_base
 		
 		$this->force_allow_birthday(0);
 		$this->require_birthday(0);
-	}*/
+	}
 	public function test_register_agreement_no_date()
 	{
 		//firstly set all
@@ -62,7 +62,7 @@ class birthdaycontrol_register_test extends birthdaycontrol_base
 		$crawler = self::submit($form);
 		
 		$this->assertContainsLang('BDAY_NO_DATE', $crawler->text());
-	}
+	}*/
 	public function test_register_agreement_valid_date()
 	{
 		$this->force_allow_birthday();
