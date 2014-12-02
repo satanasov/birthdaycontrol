@@ -61,7 +61,7 @@ class birthdaycontrol_register_test extends birthdaycontrol_base
 		
 		$crawler = self::submit($form);
 		
-		$this->assertContainsLang('BC_SHOW_BDAY', $crawler->text());
+		$this->assertContainsLang('BDAY_NO_DATE', $crawler->text());
 	}
 	public function test_register_agreement_valid_date()
 	{
