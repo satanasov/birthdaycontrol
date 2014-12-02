@@ -19,6 +19,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class mainlistener implements EventSubscriberInterface
 {
 	protected $bday_array;
+	
+	protected $viewtopic_show_age = false;
 
 	static public function getSubscribedEvents()
 	{
@@ -26,8 +28,7 @@ class mainlistener implements EventSubscriberInterface
 			'core.user_add_modify_data'	=> 'user_add_modify',
 			'core.user_setup'		=> 'default_configs',
 			'core.memberlist_prepare_profile_data'	=> 'viewprofile',
-			'core.viewtopic_get_post_data'	=> 'sql_ary_modify',
-			'core.viewtopic_post_rowset_data'	=> 'add_data_to_row',
+			'core.generate_profile_fields_template_data'	=> 'show_age',
 			'core.viewtopic_modify_post_row'	=>	'modify_post_row',
 		);
 	}
@@ -200,35 +201,49 @@ class mainlistener implements EventSubscriberInterface
 		}
 
 	}
-
-	//Let's modidfy postrow sql_ary
-	public function sql_ary_modify($event)
+	public function show_age($event)
 	{
-		$sql_ary = $event['sql_ary'];
-
-		$sql_ary['SELECT'] .= ', uc.pf_bc_show_bday';
-		$sql_ary['FROM'][PROFILE_FIELDS_DATA_TABLE]	= 'uc';
-		$sql_ary['WHERE'] .= ' AND u.user_id = uc.user_id';
-
-		$event['sql_ary'] = $sql_ary;
+		$tpl_fields = $event['tpl_fields'];
+		//$this->var_display($tpl_fields);
+		foreach ($tpl_fields['blockrow'] as $ID => $VAR)
+		{
+			if ($VAR['PROFILE_FIELD_IDENT'] == 'bc_show_bday')
+			{
+				//$this->var_display($VAR);
+				if ($VAR['PROFILE_FIELD_VALUE_RAW'] == 2)
+				{
+					$this->viewtopic_show_age = true;
+				}
+				unset($tpl_fields['blockrow'][$ID]);
+				unset($tpl_fields['row']['PROFILE_BC_SHOW_BDAY_IDENT']);
+				unset($tpl_fields['row']['PROFILE_BC_SHOW_BDAY_VALUE']);
+				unset($tpl_fields['row']['PROFILE_BC_SHOW_BDAY_VALUE_RAW']);
+				unset($tpl_fields['row']['PROFILE_BC_SHOW_BDAY_CONTACT']);
+				unset($tpl_fields['row']['PROFILE_BC_SHOW_BDAY_DESC']);
+				unset($tpl_fields['row']['PROFILE_BC_SHOW_BDAY_TYPE']);
+				unset($tpl_fields['row']['PROFILE_BC_SHOW_BDAY_NAME']);
+				unset($tpl_fields['row']['PROFILE_BC_SHOW_BDAY_EXPLAIN']);
+				unset($tpl_fields['row']['S_PROFILE_BC_SHOW_BDAY_CONTACT']);
+				unset($tpl_fields['row']['S_PROFILE_BC_SHOW_BDAY']);
+			}
+		}
+		//$this->var_display($tpl_fields);
+		//$this->var_display($event['profile_row']);
+		$event['tpl_fields'] = $tpl_fields;
+		
 	}
-
-	public function add_data_to_row($event)
-	{
-		$rowset_data = $event['rowset_data'];
-		$rowset_data['pf_bc_show_bday'] = $event['row']['pf_bc_show_bday'];
-		$event['rowset_data'] = $rowset_data;
-	}
-
+	
 	public function modify_post_row($event)
 	{
-		if ($event['row']['pf_bc_show_bday'] == 2 && $this->config['birthday_show_post'])
+		if ($this->viewtopic_show_age && $this->config['birthday_show_post'])
 		{
 			$post_row = $event['post_row'];
-			$post_row['AGE'] = $event['user_poster_data']['age'];
+			$post_row['AGE'] = true;
 			$event['post_row'] = $post_row;
+			$this->viewtopic_show_age = false;
 		}
 	}
+	
 	public function var_display($event)
 	{
 		echo '<pre>';
