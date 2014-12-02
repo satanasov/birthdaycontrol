@@ -19,7 +19,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class mainlistener implements EventSubscriberInterface
 {
 	protected $bday_array;
-	
+
 	protected $viewtopic_show_age = false;
 
 	static public function getSubscribedEvents()
@@ -204,12 +204,10 @@ class mainlistener implements EventSubscriberInterface
 	public function show_age($event)
 	{
 		$tpl_fields = $event['tpl_fields'];
-		//$this->var_display($tpl_fields);
 		foreach ($tpl_fields['blockrow'] as $ID => $VAR)
 		{
 			if ($VAR['PROFILE_FIELD_IDENT'] == 'bc_show_bday')
 			{
-				//$this->var_display($VAR);
 				if ($VAR['PROFILE_FIELD_VALUE_RAW'] == 2)
 				{
 					$this->viewtopic_show_age = true;
@@ -227,12 +225,9 @@ class mainlistener implements EventSubscriberInterface
 				unset($tpl_fields['row']['S_PROFILE_BC_SHOW_BDAY']);
 			}
 		}
-		//$this->var_display($tpl_fields);
-		//$this->var_display($event['profile_row']);
 		$event['tpl_fields'] = $tpl_fields;
-		
 	}
-	
+
 	public function modify_post_row($event)
 	{
 		if ($this->viewtopic_show_age && $this->config['birthday_show_post'])
@@ -243,7 +238,7 @@ class mainlistener implements EventSubscriberInterface
 			$this->viewtopic_show_age = false;
 		}
 	}
-	
+
 	public function var_display($event)
 	{
 		echo '<pre>';

@@ -46,6 +46,8 @@ class birthdaycontrol_register_test extends birthdaycontrol_base
 	public function test_register_agreement_no_date()
 	{
 		//firstly set all
+		$this->force_allow_birthday();
+		$this->require_birthday();
 		$this->set_birthday_min_age(18);
 		
 		$this->add_lang_ext('anavaro/birthdaycontrol', 'ucp_lang');
