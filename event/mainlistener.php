@@ -70,7 +70,14 @@ class mainlistener implements EventSubscriberInterface
 		$register = ($this->request->variable('mode', '') == 'register' ? true : false);
 		if ($register and $this->config['birthday_require'])
 		{
-			include ($this->root_path . 'ext/anavaro/birthdaycontrol/language/'.$this->user->data['user_lang'].'/ucp_lang.php');
+			if ($this->user->data['user_lang'])
+			{
+				include ($this->root_path . 'ext/anavaro/birthdaycontrol/language/'.$this->user->data['user_lang'].'/ucp_lang.php');
+			}
+			else
+			{
+				include ($this->root_path . 'ext/anavaro/birthdaycontrol/language/en/ucp_lang.php');
+			}
 			$day = $this->request->variable('bday_day', 0);
 			$month = $this->request->variable('bday_month', 0);
 			$year = $this->request->variable('bday_year', 0);
@@ -130,7 +137,14 @@ class mainlistener implements EventSubscriberInterface
 		$has_token = ($this->request->variable('form_token', '') ? true : false);
 		if ($profile && $has_token && $this->config['birthday_require'])
 		{
-			include ($this->root_path . 'ext/anavaro/birthdaycontrol/language/'.$this->user->data['user_lang'].'/ucp_lang.php');
+			if ($this->user->data['user_lang'])
+			{
+				include ($this->root_path . 'ext/anavaro/birthdaycontrol/language/'.$this->user->data['user_lang'].'/ucp_lang.php');
+			}
+			else
+			{
+				include ($this->root_path . 'ext/anavaro/birthdaycontrol/language/en/ucp_lang.php');
+			}
 			$day = $this->request->variable('bday_day', 0);
 			$month = $this->request->variable('bday_month', 0);
 			$year = $this->request->variable('bday_year', 0);
