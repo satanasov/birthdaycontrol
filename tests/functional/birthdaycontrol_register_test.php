@@ -37,7 +37,7 @@ class birthdaycontrol_register_test extends birthdaycontrol_base
 		
 		$crawler = self::submit($form);
 		
-		$this->assertContainsLang('BDAY_TO_YOUNG', $crawler->text());
+		$this->assertContains('You are not old enough to register to this board.', $crawler->text());
 		
 		$this->force_allow_birthday(0);
 		$this->require_birthday(0);
