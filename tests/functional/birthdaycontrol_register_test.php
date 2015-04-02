@@ -15,7 +15,6 @@ namespace anavaro\birthdaycontrol\tests\functional;
 */
 class birthdaycontrol_register_test extends birthdaycontrol_base
 {
-	/*
 	public function test_register_agreement_invalid_date()
 	{
 		$this->force_allow_birthday();
@@ -42,7 +41,7 @@ class birthdaycontrol_register_test extends birthdaycontrol_base
 		
 		$this->force_allow_birthday(0);
 		$this->require_birthday(0);
-	}
+	}/*
 	public function test_register_agreement_no_date()
 	{
 		//firstly set all
