@@ -15,7 +15,7 @@ namespace anavaro\birthdaycontrol\tests\functional;
 */
 class birthdaycontrol_register_test extends birthdaycontrol_base
 {
-	public function test_register_agreement_invalid_date()
+/*	public function test_register_agreement_invalid_date()
 	{
 		$this->add_lang_ext('anavaro/birthdaycontrol', 'ucp_lang');
 		$this->add_lang('common');
@@ -68,7 +68,7 @@ class birthdaycontrol_register_test extends birthdaycontrol_base
 		$this->assertContainsLang('CONFIG_UPDATED', $crawler->text());
 		$this->logout();
 		$this->logout();
-	}/*
+	}
 	public function test_register_agreement_no_date()
 	{
 		//firstly set all
