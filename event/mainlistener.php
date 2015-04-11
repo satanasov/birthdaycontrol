@@ -136,7 +136,7 @@ class mainlistener implements EventSubscriberInterface
 
 	public function change_validate($event)
 	{
-		if ($this->config['birthday_require'])
+		if ($this->config['birthday_require'] and $event['submit'])
 		{
 			$day = $this->request->variable('bday_day', 0);
 			$month = $this->request->variable('bday_month', 0);
