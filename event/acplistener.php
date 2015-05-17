@@ -42,9 +42,10 @@ class acplistener implements EventSubscriberInterface
 	* @param string			$root_path	phpBB root path
 	* @param string			$php_ext	phpEx
 	*/
-	public function __construct(\phpbb\controller\helper $helper)
+	public function __construct(\phpbb\controller\helper $helper, \phpbb\config\config $config)
 	{
 		$this->helper = $helper;
+		$this->config = $config;
 	}
 
 	public function add_options($event)
@@ -52,24 +53,39 @@ class acplistener implements EventSubscriberInterface
 		//$this->var_display($event['display_vars']);
 		if ($event['mode'] == 'settings')
 		{
-			// Store display_vars event in a local variable
-			$display_vars = $event['display_vars'];
+			// We should check if allow_birthdays is on!
+			if ($this->config['allow_birthdays'])
+			{
+				// Store display_vars event in a local variable
+				$display_vars = $event['display_vars'];
 
-			// Define my new config vars
-			$my_config_vars = array(
-				'legend10'	=> 'BIRTHDAY_CONTROL',
-				'allow_birthdays' => array('lang' => 'ALLOW_BIRTHDAYS', 'validate' => 'bool', 'type' => 'radio:yes_no', 'explain' => true),
-				'birthday_require' => array('lang' => 'BIRTHDAY_REQUIRE', 'validate' => 'bool', 'type' => 'radio:yes_no', 'explain' => true),
-				'birthday_min_age' => array('lang' => 'BIRTHDAY_MIN_AGE', 'validate' => 'int:0:99', 'type' => 'number:0:99', 'explain' => true),
-				'birthday_show_post'	=> array('lang' => 'BIRTHDAY_SHOW_POST', 'validate' => 'bool', 'type' => 'radio:yes_no', 'explain' => true),
-			);
+				// Define my new config vars
+				$my_config_vars = array(
+					'legend10'	=> 'BIRTHDAY_CONTROL',
+					'allow_birthdays' => array('lang' => 'ALLOW_BIRTHDAYS', 'validate' => 'bool', 'type' => 'radio:yes_no', 'explain' => true),
+					'birthday_require' => array('lang' => 'BIRTHDAY_REQUIRE', 'validate' => 'bool', 'type' => 'radio:yes_no', 'explain' => true),
+					'birthday_min_age' => array('lang' => 'BIRTHDAY_MIN_AGE', 'validate' => 'int:0:99', 'type' => 'number:0:99', 'explain' => true),
+					'birthday_show_post'	=> array('lang' => 'BIRTHDAY_SHOW_POST', 'validate' => 'bool', 'type' => 'radio:yes_no', 'explain' => true),
+				);
 
-			$display_vars['vars'] = phpbb_insert_config_array($display_vars['vars'], $my_config_vars, array('after' =>'warnings_expire_days'));
-			// Update the display_vars  event with the new array
-			$event['display_vars'] = array('title' => $display_vars['title'], 'vars' => $display_vars['vars']);
-			//$this->var_display($display_vars['vars']);
+				$display_vars['vars'] = phpbb_insert_config_array($display_vars['vars'], $my_config_vars, array('after' =>'warnings_expire_days'));
+				// Update the display_vars  event with the new array
+				$event['display_vars'] = array('title' => $display_vars['title'], 'vars' => $display_vars['vars']);
+				//$this->var_display($display_vars['vars']);
+			}
+			// If not - force default on birthday_require and birthday_show_post
+			else
+			{
+				if ($this->config['birthday_require'])
+				{
+					$this->config->set('birthday_require', 0);
+				}
+				if ($this->config['birthday_show_post'])
+				{
+					$this->config->set('birthday_show_post', 0);
+				}
+			}
 		}
-
 	}
 
 	public function var_display($event)

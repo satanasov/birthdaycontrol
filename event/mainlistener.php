@@ -70,11 +70,11 @@ class mainlistener implements EventSubscriberInterface
 	public function default_configs($event)
 	{
 		$register = ($this->request->variable('mode', '') == 'register' ? true : false);
-		if ($register and $this->config['birthday_require'])
+		if ($register and $this->config['birthday_require'] and $this->config['allow_birthdays'])
 		{
-			$day = 0;
-			$month = 0;
-			$year = 0;
+			$day = $this->request->variable('bday_day', 0);
+			$month = $this->request->variable('bday_month', 0);
+			$year = $this->request->variable('bday_year', 0);
 			$s_birthday_day_options = '<option value="0"' . (($day == 0) ? ' selected="selected"' : '') . '>--</option>';
 			for ($i = 1; $i < 32; $i++)
 			{
@@ -112,7 +112,7 @@ class mainlistener implements EventSubscriberInterface
 
 	public function register_validate($event)
 	{
-		if ($this->config['birthday_require'])
+		if ($this->config['birthday_require'] and $this->config['allow_birthdays'])
 		{
 			$day = $this->request->variable('bday_day', 0);
 			$month = $this->request->variable('bday_month', 0);
@@ -136,7 +136,7 @@ class mainlistener implements EventSubscriberInterface
 
 	public function change_validate($event)
 	{
-		if ($this->config['birthday_require'] and $event['submit'])
+		if ($this->config['birthday_require'] and $this->config['allow_birthdays'] and $event['submit'])
 		{
 			$day = $this->request->variable('bday_day', 0);
 			$month = $this->request->variable('bday_month', 0);
