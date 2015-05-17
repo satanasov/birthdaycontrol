@@ -41,7 +41,6 @@ class mainlistener implements EventSubscriberInterface
 	* the dependencies defined in the services.yml file for this service.
 	*
 	* @param \phpbb\auth		$auth		Auth object
-	* @param \phpbb\cache\service	$cache		Cache object
 	* @param \phpbb\config	$config		Config object
 	* @param \phpbb\db\driver	$db		Database object
 	* @param \phpbb\request	$request	Request object
@@ -52,25 +51,18 @@ class mainlistener implements EventSubscriberInterface
 	* @param string			$root_path	phpBB root path
 	* @param string			$php_ext	phpEx
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\cache\service $cache, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, \phpbb\controller\helper $helper, $root_path, $php_ext, $table_prefix)
+	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user)
 	{
-		$this->auth = $auth;
-		$this->cache = $cache;
 		$this->config = $config;
 		$this->db = $db;
 		$this->request = $request;
 		$this->template = $template;
 		$this->user = $user;
-		$this->helper = $helper;
-		$this->root_path = $root_path;
-		$this->php_ext = $php_ext;
-		$this->table_prefix = $table_prefix;
 	}
 
 	public function default_configs($event)
 	{
-		$register = ($this->request->variable('mode', '') == 'register' ? true : false);
-		if ($register and $this->config['birthday_require'] and $this->config['allow_birthdays'])
+		if (!$event['user_data']['is_registered'] && !$event['user_data']['is_bot'] && $this->config['birthday_require'] && $this->config['allow_birthdays'])
 		{
 			$day = $this->request->variable('bday_day', 0);
 			$month = $this->request->variable('bday_month', 0);
@@ -106,13 +98,12 @@ class mainlistener implements EventSubscriberInterface
 				'IS_BIRTHDAY_REQUIRE'	=>	true,
 			));
 		}
-
 		$this->user->add_lang_ext('anavaro/birthdaycontrol', 'ucp_lang');
 	}
 
 	public function register_validate($event)
 	{
-		if ($this->config['birthday_require'] and $this->config['allow_birthdays'])
+		if ($this->config['birthday_require'] && $this->config['allow_birthdays'])
 		{
 			$day = $this->request->variable('bday_day', 0);
 			$month = $this->request->variable('bday_month', 0);
@@ -261,5 +252,8 @@ class mainlistener implements EventSubscriberInterface
 		}
 		return $age;
 	}
-
+	public function test($event)
+	{
+		var_dump($event['item_id']);
+	}
 }
