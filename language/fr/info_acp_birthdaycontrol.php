@@ -39,7 +39,7 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'BIRTHDAY_CONTROL'	=> 'Gestion des besoins de l’anniversaire',
+	'BIRTHDAY_CONTROL'	=> 'Gestion de l’anniversaire',
 	'BIRTHDAY_REQUIRE'	=> 'Anniversaire obligatoire',
 	'BIRTHDAY_REQUIRE_EXPLAIN'	=> 'Exige de l’utilisateur qui saisisse son âge durant son enregistrement.',
 	'BIRTHDAY_MIN_AGE'	=> 'Âge minimum',
