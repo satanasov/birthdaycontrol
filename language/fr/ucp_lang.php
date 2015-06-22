@@ -40,7 +40,7 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	'BIRTH_DATE'	=> 'Anniversaire',
-	'BDAY_NO_DATE'	=> 'Veuillez sélectionner votre date d’anniversaire. Vous ne pouvez pas vous enregistrer si vous ne l’indiquez pas.',
+	'BDAY_NO_DATE'	=> 'Veuillez sélectionner votre date d’anniversaire. Cette information est obligatoire pour s’enregistrer.',
 	'BDAY_TO_YOUNG'	=> 'Vous n’êtes pas assez âgé pour vous enregistrer sur ce forum.<br />Ce forum requiert d’avoir au moins %1$d ans.',
 	'BC_SHOW_BDAY'	=> 'Afficher votre âge',
 	'BDAY_NA'	=> 'Non disponible',
