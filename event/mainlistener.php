@@ -147,31 +147,34 @@ class mainlistener implements EventSubscriberInterface
 	public function user_add_modify($event)
 	{
 		//let's test age
-		$this->user->add_lang_ext('anavaro/birthdaycontrol', 'ucp_lang');
-		$day = $this->request->variable('bday_day', 0);
-		$month = $this->request->variable('bday_month', 0);
-		$year = $this->request->variable('bday_year', 0);
+		if ($event['sql_ary']['user_type'] != 2 && $event['sql_ary']['group_id'] != 6)
+		{
+			$this->user->add_lang_ext('anavaro/birthdaycontrol', 'ucp_lang');
+			$day = $this->request->variable('bday_day', 0);
+			$month = $this->request->variable('bday_month', 0);
+			$year = $this->request->variable('bday_year', 0);
 
-		if ($day === 0 || $month === 0 || $year === 0)
-		{
-			trigger_error($this->user->lang['BDAY_NO_DATE']);
-		}
+			if ($day === 0 || $month === 0 || $year === 0)
+			{
+				trigger_error($this->user->lang['BDAY_NO_DATE']);
+			}
 
-		else
-		{
-			$user_birthday = sprintf('%2d-%2d-%4d', trim($day), trim($month), trim($year));
-		}
+			else
+			{
+				$user_birthday = sprintf('%2d-%2d-%4d', trim($day), trim($month), trim($year));
+			}
 
-		$age = $this->age($user_birthday);
-		if ($age < $this->config['birthday_min_age'])
-		{
-			trigger_error(sprintf($this->user->lang['BDAY_TO_YOUNG'], $this->config['birthday_min_age']));
-		}
-		else
-		{
-			$input_array = $event['sql_ary'];
-			$input_array['user_birthday'] = $user_birthday;
-			$event['sql_ary'] = $input_array;
+			$age = $this->age($user_birthday);
+			if ($age < $this->config['birthday_min_age'])
+			{
+				trigger_error(sprintf($this->user->lang['BDAY_TO_YOUNG'], $this->config['birthday_min_age']));
+			}
+			else
+			{
+				$input_array = $event['sql_ary'];
+				$input_array['user_birthday'] = $user_birthday;
+				$event['sql_ary'] = $input_array;
+			}
 		}
 	}
 
