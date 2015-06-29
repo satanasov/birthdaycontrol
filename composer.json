@@ -3,7 +3,7 @@
 	"type": "phpbb-extension",
 	"description": "Adds restrictions for registration of users under certain age.",
 	"homepage": "https://github.com/satanasov/birthdaycontrol",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"time": "2014-06-25",
 	"license": "GPL-2.0",
 	"authors": [
