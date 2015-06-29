@@ -43,7 +43,7 @@ class m2_create_cpf extends \phpbb\db\migration\profilefield_base_migration
 		//'field_minlen'	=> 0,
 		//'field_maxlen'	=> 0,
 		//'field_novalue'	=> 1,
-		'field_default_value'	=> 2,
+		'field_default_value'	=> 1,
 		//'field_validation'	=> '',
 		'field_required'	=> 0,
 		'field_show_novalue'	=> 0,
@@ -53,7 +53,7 @@ class m2_create_cpf extends \phpbb\db\migration\profilefield_base_migration
 		'field_show_profile'	=> 1,
 		'field_show_on_ml'	=> 0,
 		'field_hide'	=> 0,
-		'field_no_view'	=> 1,
+		'field_no_view'	=> 0,
 		'field_active'	=> 1,
 		'field_is_contact'	=> 0,
 		'field_contact_desc'	=> '',
@@ -62,12 +62,12 @@ class m2_create_cpf extends \phpbb\db\migration\profilefield_base_migration
 
 	protected $profilefield_language_data = array(
 		array(
-			'option_id'	=> 1,
+			'option_id'	=> 0,
 			'field_type'	=> 'profilefields.type.bool',
 			'lang_value'	=> 'Yes',
 		),
 		array(
-			'option_id'	=> 2,
+			'option_id'	=> 1,
 			'field_type'	=> 'profilefields.type.bool',
 			'lang_value'	=> 'No',
 		),
