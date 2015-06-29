@@ -203,7 +203,7 @@ class mainlistener implements EventSubscriberInterface
 		{
 			if ($VAR['PROFILE_FIELD_IDENT'] == 'bc_show_bday')
 			{
-				if ($VAR['PROFILE_FIELD_VALUE_RAW'] == 2)
+				if ($VAR['PROFILE_FIELD_VALUE_RAW'] == 1)
 				{
 					$this->viewtopic_show_age = true;
 				}
