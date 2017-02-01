@@ -2,17 +2,17 @@ services:
     anavaro.birthdaycontrol.acplistener:
         class: anavaro\birthdaycontrol\event\acplistener
         arguments:
-            - @controller.helper
-            - @config
+            - '@controller.helper'
+            - '@config'
         tags:
             - { name: event.listener }
     anavaro.birthdaycontrol.mainlistener:
         class: anavaro\birthdaycontrol\event\mainlistener
         arguments:
-            - @config
-            - @dbal.conn
-            - @request
-            - @template
-            - @user
+            - '@config'
+            - '@dbal.conn'
+            - '@request'
+            - '@template'
+            - '@user'
         tags:
             - { name: event.listener }
