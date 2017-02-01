@@ -2,7 +2,6 @@ services:
     anavaro.birthdaycontrol.acplistener:
         class: anavaro\birthdaycontrol\event\acplistener
         arguments:
-            - '@controller.helper'
             - '@config'
         tags:
             - { name: event.listener }

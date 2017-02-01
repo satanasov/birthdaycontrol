@@ -25,26 +25,18 @@ class acplistener implements EventSubscriberInterface
 		);
 	}
 
+	/** @var \phpbb\config\config */
+	protected $config;
+
 	/**
 	* Constructor
 	* NOTE: The parameters of this method must match in order and type with
 	* the dependencies defined in the services.yml file for this service.
 	*
-	* @param \phpbb\auth		$auth		Auth object
-	* @param \phpbb\cache\service	$cache		Cache object
-	* @param \phpbb\config	$config		Config object
-	* @param \phpbb\db\driver	$db		Database object
-	* @param \phpbb\request	$request	Request object
-	* @param \phpbb\template	$template	Template object
-	* @param \phpbb\user		$user		User object
-	* @param \phpbb\content_visibility		$content_visibility	Content visibility object
-	* @param \phpbb\controller\helper		$helper				Controller helper object
-	* @param string			$root_path	phpBB root path
-	* @param string			$php_ext	phpEx
+	* @param \phpbb\config\config	$config		Config object
 	*/
-	public function __construct(\phpbb\controller\helper $helper, \phpbb\config\config $config)
+	public function __construct(\phpbb\config\config $config)
 	{
-		$this->helper = $helper;
 		$this->config = $config;
 	}
 
@@ -87,12 +79,4 @@ class acplistener implements EventSubscriberInterface
 			}
 		}
 	}
-
-	public function var_display($event)
-	{
-		echo '<pre>';
-		print_r($event);
-		echo '</pre>';
-	}
-
 }
