@@ -9,6 +9,9 @@
 */
 
 namespace anavaro\birthdaycontrol\tests\event;
+
+use Facebook\WebDriver\Exception\ExpectedException;
+
 /**
 * @group event
 */
@@ -23,7 +26,7 @@ class main_event_test extends \phpbb_database_test_case
 	{
 		return array('anavaro/birthdaycontrol');
 	}
-	
+
 	protected $db;
 
 	/**
@@ -40,24 +43,37 @@ class main_event_test extends \phpbb_database_test_case
 	{
 		parent::setUp();
 
-		global $phpbb_dispatcher;
-		
+		global $phpbb_dispatcher, $phpbb_root_path, $phpEx;
+
 
 		$this->config = new \phpbb\config\config(array(
 		));
 		$this->db = $this->new_dbal();
 		$this->request = $this->getMock('\phpbb\request\request');
+
 		$this->template = $this->getMockBuilder('\phpbb\template\template')
 			->getMock();
 		// Event dispatcher
-
-		$this->user = $this->getMock('\phpbb\user', array(), array('\phpbb\datetime'));
+/*
+		$this->user = $this->getMock('\phpbb\user', array(), array(
+			new \phpbb\language\language(new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx)),
+			'\phpbb\datetime'
+		));
 		$this->user->optionset('viewcensors', false);
-		$this->user->style['style_path'] = 'prosilver';
-		
+		$this->user->style['style_path'] = 'prosilver';*/
+
+		$this->user = new \phpbb\user(
+			new \phpbb\language\language(new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx)),
+			'\phpbb\datetime'
+		);
 		$phpbb_dispatcher = new \phpbb_mock_event_dispatcher();
+		$this->language = $this->getMockBuilder('\phpbb\language\language')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->language->method('lang')
+			->will($this->returnArgument(0));
 	}
-	
+
 	// Let's create listener
 	protected function set_listener()
 	{
@@ -66,7 +82,8 @@ class main_event_test extends \phpbb_database_test_case
 			$this->db,
 			$this->request,
 			$this->template,
-			$this->user
+			$this->user,
+			$this->language
 		);
 	}
 	/**
@@ -133,11 +150,17 @@ class main_event_test extends \phpbb_database_test_case
 		$event = new \phpbb\event\data(compact($event_data));
 		$dispatcher->dispatch('core.user_setup', $event);
 	}
-/*	
-	public function test_register_validate()
+
+	// TEST core.ucp_register_data_before
+
+	/**
+	 * @expectedException PHPUnit_Framework_Error_Notice
+	 * @expectedExceptionMessage BDAY_NO_DATE
+	 */
+	public function test_register_validate_no_date()
 	{
-		global $bday_day, $bday_month, $bday_year;
-		$bday_day = $bday_month = $bday_year = 0;
+		$this->request->method('variable')
+			->will($this->returnValue(0));
 		$this->config['allow_birthdays'] = 1;
 		$this->config['birthday_require'] = 1;
 		$this->config['birthday_min_age'] = 18;
@@ -148,16 +171,175 @@ class main_event_test extends \phpbb_database_test_case
 			'submit' => true,
 		);
 		$event = new \phpbb\event\data(compact($event_data));
-		try
-		{
-			$dispatcher->dispatch('core.ucp_register_data_before', $event);
-		}
-		catch (Exception $e)
-		{
-			$e->getMessage();
-		}
-		
-		//$this->setExpectedTriggerError(E_USER_NOTICE, 'zazazaza');
+
+		$dispatcher->dispatch('core.ucp_register_data_before', $event);
 	}
-	*/
+
+	/**
+	 * @expectedException PHPUnit_Framework_Error_Notice
+	 * @expectedExceptionMessage BDAY_TO_YOUNG
+	 */
+	public function test_register_validate_young()
+	{
+		$this->config['allow_birthdays'] = 1;
+		$this->config['birthday_require'] = 1;
+		$this->config['birthday_min_age'] = 18;
+		$this->set_listener();
+		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+		$dispatcher->addListener('core.ucp_register_data_before', array($this->listener, 'register_validate'));
+		$event_data = array(
+			'submit' => true,
+		);
+		$event = new \phpbb\event\data(compact($event_data));
+
+		$dispatcher->dispatch('core.ucp_register_data_before', $event);
+	}
+
+	public function test_register_validate_valid()
+	{
+		$this->request->method('variable')
+			->will(
+				$this->returnValue(10)
+			);
+		$this->config['allow_birthdays'] = 1;
+		$this->config['birthday_require'] = 1;
+		$this->config['birthday_min_age'] = 18;
+		$this->set_listener();
+		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+		$dispatcher->addListener('core.ucp_register_data_before', array($this->listener, 'register_validate'));
+		$event_data = array(
+			'submit' => true,
+		);
+		$event = new \phpbb\event\data(compact($event_data));
+
+		$dispatcher->dispatch('core.ucp_register_data_before', $event);
+	}
+
+	public function test_register_not_rq()
+	{
+		$this->config['allow_birthdays'] = 1;
+		$this->config['birthday_require'] = 0;
+		$this->config['birthday_min_age'] = 18;
+		$this->set_listener();
+		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+		$dispatcher->addListener('core.ucp_register_data_before', array($this->listener, 'register_validate'));
+		$event_data = array(
+			'submit' => true,
+		);
+		$event = new \phpbb\event\data(compact($event_data));
+
+		$dispatcher->dispatch('core.ucp_register_data_before', $event);
+	}
+
+	public function test_register_not_allowed()
+	{
+		$this->config['allow_birthdays'] = 0;
+		$this->config['birthday_require'] = 1;
+		$this->config['birthday_min_age'] = 18;
+		$this->set_listener();
+		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+		$dispatcher->addListener('core.ucp_register_data_before', array($this->listener, 'register_validate'));
+		$event_data = array(
+			'submit' => true,
+		);
+		$event = new \phpbb\event\data(compact($event_data));
+
+		$dispatcher->dispatch('core.ucp_register_data_before', $event);
+	}
+
+	// TEST core.ucp_profile_modify_profile_info
+
+	/**
+	 * @expectedException PHPUnit_Framework_Error_Notice
+	 * @expectedExceptionMessage BDAY_NO_DATE
+	 */
+	public function test_update_validate_no_date()
+	{
+		$this->request->method('variable')
+			->will($this->returnValue(0));
+		$this->config['allow_birthdays'] = 1;
+		$this->config['birthday_require'] = 1;
+		$this->config['birthday_min_age'] = 18;
+		$this->set_listener();
+		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+		$dispatcher->addListener('core.ucp_profile_modify_profile_info', array($this->listener, 'register_validate'));
+		$event_data = array(
+			'submit' => true,
+		);
+		$event = new \phpbb\event\data(compact($event_data));
+
+		$dispatcher->dispatch('core.ucp_profile_modify_profile_info', $event);
+	}
+
+	/**
+	 * @expectedException PHPUnit_Framework_Error_Notice
+	 * @expectedExceptionMessage BDAY_TO_YOUNG
+	 */
+	public function test_update_validate_young()
+	{
+		$this->config['allow_birthdays'] = 1;
+		$this->config['birthday_require'] = 1;
+		$this->config['birthday_min_age'] = 18;
+		$this->set_listener();
+		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+		$dispatcher->addListener('core.ucp_profile_modify_profile_info', array($this->listener, 'register_validate'));
+		$event_data = array(
+			'submit' => true,
+		);
+		$event = new \phpbb\event\data(compact($event_data));
+
+		$dispatcher->dispatch('core.ucp_profile_modify_profile_info', $event);
+	}
+
+	public function test_update_validate_valid()
+	{
+		$this->request->method('variable')
+			->will(
+				$this->returnValue(10)
+			);
+		$this->config['allow_birthdays'] = 1;
+		$this->config['birthday_require'] = 1;
+		$this->config['birthday_min_age'] = 18;
+		$this->set_listener();
+		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+		$dispatcher->addListener('core.ucp_profile_modify_profile_info', array($this->listener, 'register_validate'));
+		$event_data = array(
+			'submit' => true,
+		);
+		$event = new \phpbb\event\data(compact($event_data));
+
+		$dispatcher->dispatch('core.ucp_profile_modify_profile_info', $event);
+	}
+
+	public function test_update_not_rq()
+	{
+		$this->config['allow_birthdays'] = 1;
+		$this->config['birthday_require'] = 0;
+		$this->config['birthday_min_age'] = 18;
+		$this->set_listener();
+		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+		$dispatcher->addListener('core.ucp_profile_modify_profile_info', array($this->listener, 'register_validate'));
+		$event_data = array(
+			'submit' => true,
+		);
+		$event = new \phpbb\event\data(compact($event_data));
+
+		$dispatcher->dispatch('core.ucp_profile_modify_profile_info', $event);
+	}
+
+	public function test_update_not_allowed()
+	{
+		$this->config['allow_birthdays'] = 0;
+		$this->config['birthday_require'] = 1;
+		$this->config['birthday_min_age'] = 18;
+		$this->set_listener();
+		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+		$dispatcher->addListener('core.ucp_profile_modify_profile_info', array($this->listener, 'register_validate'));
+		$event_data = array(
+			'submit' => true,
+		);
+		$event = new \phpbb\event\data(compact($event_data));
+
+		$dispatcher->dispatch('core.ucp_profile_modify_profile_info', $event);
+	}
 }

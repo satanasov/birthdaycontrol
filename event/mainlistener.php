@@ -124,15 +124,13 @@ class mainlistener implements EventSubscriberInterface
 			$day = $this->request->variable('bday_day', 0);
 			$month = $this->request->variable('bday_month', 0);
 			$year = $this->request->variable('bday_year', 0);
+
 			if ($day === 0 || $month === 0 || $year === 0)
 			{
 				trigger_error($this->lang->lang('BDAY_NO_DATE'));
 			}
 
-			else
-			{
-				$user_birthday = sprintf('%2d-%2d-%4d', trim($day), trim($month), trim($year));
-			}
+			$user_birthday = sprintf('%2d-%2d-%4d', trim($day), trim($month), trim($year));
 			$age = $this->age($user_birthday);
 			if ($age < $this->config['birthday_min_age'])
 			{
@@ -175,11 +173,7 @@ class mainlistener implements EventSubscriberInterface
 				trigger_error($this->lang->lang('BDAY_NO_DATE'));
 			}
 
-			else
-			{
-				$user_birthday = sprintf('%2d-%2d-%4d', trim($day), trim($month), trim($year));
-			}
-
+			$user_birthday = sprintf('%2d-%2d-%4d', trim($day), trim($month), trim($year));
 			$age = $this->age($user_birthday);
 			if ($age < $this->config['birthday_min_age'])
 			{
