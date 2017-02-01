@@ -22,6 +22,24 @@ class mainlistener implements EventSubscriberInterface
 
 	protected $viewtopic_show_age = false;
 
+	/** @var \phpbb\config\config */
+	protected $config;
+
+	/** @var \phpbb\db\driver\driver_interface */
+	protected $db;
+
+	/** @var \phpbb\request\request */
+	protected $request;
+
+	/** @var \phpbb\template\template */
+	protected $template;
+
+	/** @var \phpbb\user */
+	protected $user;
+
+	/** @var \phpbb\language\language */
+	protected $lang;
+
 	static public function getSubscribedEvents()
 	{
 		return array(
@@ -36,28 +54,26 @@ class mainlistener implements EventSubscriberInterface
 	}
 
 	/**
-	* Constructor
-	* NOTE: The parameters of this method must match in order and type with
-	* the dependencies defined in the services.yml file for this service.
-	*
-	* @param \phpbb\auth		$auth		Auth object
-	* @param \phpbb\config	$config		Config object
-	* @param \phpbb\db\driver	$db		Database object
-	* @param \phpbb\request	$request	Request object
-	* @param \phpbb\template	$template	Template object
-	* @param \phpbb\user		$user		User object
-	* @param \phpbb\content_visibility		$content_visibility	Content visibility object
-	* @param \phpbb\controller\helper		$helper				Controller helper object
-	* @param string			$root_path	phpBB root path
-	* @param string			$php_ext	phpEx
-	*/
-	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user)
+	 * Constructor
+	 * NOTE: The parameters of this method must match in order and type with
+	 * the dependencies defined in the services.yml file for this service.
+	 *
+	 * @param \phpbb\config\config              $config
+	 * @param \phpbb\db\driver\driver_interface $db
+	 * @param \phpbb\request\request            $request
+	 * @param \phpbb\template\template          $template
+	 * @param \phpbb\user                       $user
+	 * @param \phpbb\language\language          $language
+	 */
+	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\request\request $request,
+								\phpbb\template\template $template, \phpbb\user $user, \phpbb\language\language $language)
 	{
 		$this->config = $config;
 		$this->db = $db;
 		$this->request = $request;
 		$this->template = $template;
 		$this->user = $user;
+		$this->lang = $language;
 	}
 
 	public function default_configs($event)
@@ -71,13 +87,13 @@ class mainlistener implements EventSubscriberInterface
 			for ($i = 1; $i < 32; $i++)
 			{
 				$selected = ($i == $day) ? ' selected="selected"' : '';
-				$s_birthday_day_options .= "<option value=\"$i\"$selected>$i</option>";
+				$s_birthday_day_options .= '<option value=' . $i . '' . $selected . '>' . $i .'</option>';
 			}
 			$s_birthday_month_options = '<option value="0"' . (($month == 0) ? ' selected="selected"' : '') . '>--</option>';
 			for ($i = 1; $i < 13; $i++)
 			{
 				$selected = ($i == $month) ? ' selected="selected"' : '';
-				$s_birthday_month_options .= "<option value=\"$i\"$selected>$i</option>";
+				$s_birthday_month_options .= '<option value=' . $i . '' . $selected . '>' . $i .'</option>';
 			}
 			$s_birthday_year_options = '';
 			$now = getdate();
@@ -85,7 +101,7 @@ class mainlistener implements EventSubscriberInterface
 			for ($i = $now['year'] - 100; $i <= $now['year']; $i++)
 			{
 				$selected = ($i == $year) ? ' selected="selected"' : '';
-				$s_birthday_year_options .= "<option value=\"$i\"$selected>$i</option>";
+				$s_birthday_year_options .= '<option value=' . $i . '' . $selected . '>' . $i .'</option>';
 			}
 			unset($now);
 
@@ -98,7 +114,7 @@ class mainlistener implements EventSubscriberInterface
 				'IS_BIRTHDAY_REQUIRE'	=>	true,
 			));
 		}
-		$this->user->add_lang_ext('anavaro/birthdaycontrol', 'ucp_lang');
+		$this->lang->add_lang(array('ucp_lang'), 'anavaro/birthdaycontrol');
 	}
 
 	public function register_validate($event)
@@ -110,7 +126,7 @@ class mainlistener implements EventSubscriberInterface
 			$year = $this->request->variable('bday_year', 0);
 			if ($day === 0 || $month === 0 || $year === 0)
 			{
-				trigger_error($this->user->lang['BDAY_NO_DATE']);
+				trigger_error($this->lang->lang('BDAY_NO_DATE'));
 			}
 
 			else
@@ -120,7 +136,7 @@ class mainlistener implements EventSubscriberInterface
 			$age = $this->age($user_birthday);
 			if ($age < $this->config['birthday_min_age'])
 			{
-				trigger_error(sprintf($this->user->lang['BDAY_TO_YOUNG'], $this->config['birthday_min_age']));
+				trigger_error(sprintf($this->lang->lang('BDAY_TO_YOUNG'), $this->config['birthday_min_age']));
 			}
 		}
 	}
@@ -134,13 +150,13 @@ class mainlistener implements EventSubscriberInterface
 			$year = $this->request->variable('bday_year', 0);
 			if ($day === 0 || $month === 0 || $year === 0)
 			{
-				trigger_error($this->user->lang['BDAY_NO_DATE']);
+				trigger_error($this->lang->lang('BDAY_NO_DATE'));
 			}
 			$user_birthday = sprintf('%2d-%2d-%4d', trim($day), trim($month), trim($year));
 			$age = $this->age($user_birthday);
 			if ($age < $this->config['birthday_min_age'])
 			{
-				trigger_error(sprintf($this->user->lang['BDAY_TO_YOUNG'], $this->config['birthday_min_age']));
+				trigger_error(sprintf($this->lang->lang('BDAY_TO_YOUNG'), $this->config['birthday_min_age']));
 			}
 		}
 	}
@@ -149,14 +165,14 @@ class mainlistener implements EventSubscriberInterface
 		//let's test age
 		if ($event['sql_ary']['user_type'] != 2 && $event['sql_ary']['group_id'] != 6)
 		{
-			$this->user->add_lang_ext('anavaro/birthdaycontrol', 'ucp_lang');
+			$this->lang->add_lang(array('ucp_lang'), 'anavaro/birthdaycontrol');
 			$day = $this->request->variable('bday_day', 0);
 			$month = $this->request->variable('bday_month', 0);
 			$year = $this->request->variable('bday_year', 0);
 
 			if ($day === 0 || $month === 0 || $year === 0)
 			{
-				trigger_error($this->user->lang['BDAY_NO_DATE']);
+				trigger_error($this->lang->lang('BDAY_NO_DATE'));
 			}
 
 			else
@@ -167,7 +183,7 @@ class mainlistener implements EventSubscriberInterface
 			$age = $this->age($user_birthday);
 			if ($age < $this->config['birthday_min_age'])
 			{
-				trigger_error(sprintf($this->user->lang['BDAY_TO_YOUNG'], $this->config['birthday_min_age']));
+				trigger_error(sprintf($this->lang->lang('BDAY_TO_YOUNG'), $this->config['birthday_min_age']));
 			}
 			else
 			{
@@ -254,9 +270,5 @@ class mainlistener implements EventSubscriberInterface
 			$age = max(0, (int) ($now['year'] - $bday_year - $diff));
 		}
 		return $age;
-	}
-	public function test($event)
-	{
-		var_dump($event['item_id']);
 	}
 }
