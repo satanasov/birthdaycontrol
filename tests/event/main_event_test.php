@@ -12,6 +12,17 @@ namespace anavaro\birthdaycontrol\tests\event;
 
 use Facebook\WebDriver\Exception\ExpectedException;
 
+class test
+{
+	public function getTimestamp()
+	{
+		return time();
+	}
+	public function getOffset()
+	{
+		return 0;
+	}
+}
 /**
 * @group event
 */
@@ -39,7 +50,7 @@ class main_event_test extends \phpbb_database_test_case
 	/**
 	* Setup test environment
 	*/
-	public function setUp()
+	public function setUp() : void
 	{
 		parent::setUp();
 
@@ -49,7 +60,9 @@ class main_event_test extends \phpbb_database_test_case
 		$this->config = new \phpbb\config\config(array(
 		));
 		$this->db = $this->new_dbal();
-		$this->request = $this->getMock('\phpbb\request\request');
+		$this->request = $this->getMockBuilder('\phpbb\request\request')
+			->disableOriginalConstructor()
+			->getMock();;
 
 		$this->template = $this->getMockBuilder('\phpbb\template\template')
 			->getMock();
@@ -62,10 +75,15 @@ class main_event_test extends \phpbb_database_test_case
 		$this->user->optionset('viewcensors', false);
 		$this->user->style['style_path'] = 'prosilver';*/
 
-		$this->user = new \phpbb\user(
-			new \phpbb\language\language(new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx)),
-			'\phpbb\datetime'
-		);
+		$this->user = $this->getMockBuilder('\phpbb\user')
+			->setConstructorArgs(array(
+				new \phpbb\language\language(new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx)),
+				'\phpbb\datetime'
+			))
+			->getMock();
+		$this->user->method('create_datetime')
+			->willReturn(new test());
+		//$this->user->method('getTimestamp')->willReturn(time());
 		$phpbb_dispatcher = new \phpbb_mock_event_dispatcher();
 		$this->language = $this->getMockBuilder('\phpbb\language\language')
 			->disableOriginalConstructor()
@@ -154,7 +172,7 @@ class main_event_test extends \phpbb_database_test_case
 	// TEST core.ucp_register_data_before
 
 	/**
-	 * @expectedException PHPUnit_Framework_Error_Notice
+	 * @expectedException PHPUnit\Framework\Error\Notice
 	 * @expectedExceptionMessage BDAY_NO_DATE
 	 */
 	public function test_register_validate_no_date()
@@ -176,7 +194,7 @@ class main_event_test extends \phpbb_database_test_case
 	}
 
 	/**
-	 * @expectedException PHPUnit_Framework_Error_Notice
+	 * @expectedException \PHPUnit\Framework\Error\Notice
 	 * @expectedExceptionMessage BDAY_TO_YOUNG
 	 */
 	public function test_register_validate_young()
@@ -213,6 +231,7 @@ class main_event_test extends \phpbb_database_test_case
 		$event = new \phpbb\event\data(compact($event_data));
 
 		$dispatcher->dispatch('core.ucp_register_data_before', $event);
+		$this->assertTrue(true);
 	}
 
 	public function test_register_not_rq()
@@ -229,6 +248,7 @@ class main_event_test extends \phpbb_database_test_case
 		$event = new \phpbb\event\data(compact($event_data));
 
 		$dispatcher->dispatch('core.ucp_register_data_before', $event);
+		$this->assertTrue(true);
 	}
 
 	public function test_register_not_allowed()
@@ -245,12 +265,13 @@ class main_event_test extends \phpbb_database_test_case
 		$event = new \phpbb\event\data(compact($event_data));
 
 		$dispatcher->dispatch('core.ucp_register_data_before', $event);
+		$this->assertTrue(true);
 	}
 
 	// TEST core.ucp_profile_modify_profile_info
 
 	/**
-	 * @expectedException PHPUnit_Framework_Error_Notice
+	 * @expectedException \PHPUnit\Framework\Error\Notice
 	 * @expectedExceptionMessage BDAY_NO_DATE
 	 */
 	public function test_update_validate_no_date()
@@ -272,7 +293,7 @@ class main_event_test extends \phpbb_database_test_case
 	}
 
 	/**
-	 * @expectedException PHPUnit_Framework_Error_Notice
+	 * @expectedException \PHPUnit\Framework\Error\Notice
 	 * @expectedExceptionMessage BDAY_TO_YOUNG
 	 */
 	public function test_update_validate_young()
@@ -309,6 +330,7 @@ class main_event_test extends \phpbb_database_test_case
 		$event = new \phpbb\event\data(compact($event_data));
 
 		$dispatcher->dispatch('core.ucp_profile_modify_profile_info', $event);
+		$this->assertTrue(true);
 	}
 
 	public function test_update_not_rq()
@@ -325,6 +347,7 @@ class main_event_test extends \phpbb_database_test_case
 		$event = new \phpbb\event\data(compact($event_data));
 
 		$dispatcher->dispatch('core.ucp_profile_modify_profile_info', $event);
+		$this->assertTrue(true);
 	}
 
 	public function test_update_not_allowed()
@@ -341,5 +364,6 @@ class main_event_test extends \phpbb_database_test_case
 		$event = new \phpbb\event\data(compact($event_data));
 
 		$dispatcher->dispatch('core.ucp_profile_modify_profile_info', $event);
+		$this->assertTrue(true);
 	}
 }

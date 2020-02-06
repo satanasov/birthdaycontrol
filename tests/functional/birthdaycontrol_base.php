@@ -20,7 +20,7 @@ class birthdaycontrol_base extends \phpbb_functional_test_case
 		return array('anavaro/birthdaycontrol');
 	}
 
-	public function setUp()
+	public function setUp() :void
 	{
 		parent::setUp();
 		//$this->force_allow_birthday();
@@ -28,7 +28,7 @@ class birthdaycontrol_base extends \phpbb_functional_test_case
 	}
 
 	/**
-	* Allow birthday (just to be sure) 
+	* Allow birthday (just to be sure)
 	*/
 	public function force_allow_birthday($var = 1)
 	{
@@ -44,7 +44,7 @@ class birthdaycontrol_base extends \phpbb_functional_test_case
 	}
 
 	/**
-	* Require birthday (it's not required on install) 
+	* Require birthday (it's not required on install)
 	*/
 	public function require_birthday($var = 1)
 	{
@@ -81,12 +81,12 @@ class birthdaycontrol_base extends \phpbb_functional_test_case
 		$sql = "UPDATE phpbb_profile_fields_data
 			SET pf_bc_show_bday = $state
 			WHERE user_id = $userid";
-			
+
 		$this->db->sql_query($sql);
 
 		$this->purge_cache();
 	}
-	
+
 	public function get_topic_id($topic_title)
 	{
 		$sql = 'SELECT topic_id
@@ -96,7 +96,7 @@ class birthdaycontrol_base extends \phpbb_functional_test_case
 		$row = $this->db->sql_fetchrow($result);
 		return $row['topic_id'];
 	}
-	
+
 	public function get_forum_id($forum_title)
 	{
 		$sql = 'SELECT topic_id
@@ -106,7 +106,7 @@ class birthdaycontrol_base extends \phpbb_functional_test_case
 		$row = $this->db->sql_fetchrow($result);
 		return $row['topic_id'];
 	}
-	
+
 	public function get_user_id($username)
 	{
 		$sql = 'SELECT user_id, username
