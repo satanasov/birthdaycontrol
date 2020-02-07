@@ -1,45 +1,36 @@
-dist: precise
-sudo: required
-
 language: php
+dist: xenial
 
 matrix:
-  include:
-    - php: 5.5
-      env: DB=none;NOTESTS=1
-    - php: 5.4
-      env: DB=mysqli
-    - php: 5.4
-      env: DB=mysql
-    - php: 5.4
-      env: DB=mariadb
-    - php: 5.4
-      env: DB=postgres
-    - php: 5.4
-      env: DB=sqlite3
-    - php: 5.5
-      env: DB=mysqli
-    - php: 5.6
-      env: DB=mysqli
-    - php: 7
-      env: DB=mysqli
-    - php: 7.1
-      env: DB=mysqli
-    - php: hhvm
-      env: DB=mysqli
-  allow_failures:
-    - php: hhvm
-    - php: 5.4
-      env: DB=sqlite3
-  fast_finish: true
-
+    include:
+        - php: 7.1
+          env: DB=none;NOTESTS=1
+        - php: 7.1
+          env: DB=mariadb
+        - php: 7.1
+          env: DB=postgres
+        - php: 7.1
+          env: DB=sqlite3
+        - php: 7.1
+          env: DB=mysqli # MyISAM
+        - php: 7.2
+          env: DB=mysqli
+        - php: 7.3
+          env: DB=mysqli
+        - php: 7.4snapshot
+          env: DB=mysqli
+        - php: nightly
+          env: DB=mysqli
+    allow_failures:
+        - php: nightly
+    fast_finish: true
 env:
   global:
     - EXTNAME="anavaro/birthdaycontrol"  # CHANGE name of the extension HERE
     - SNIFF="1"            # Should we run code sniffer on your code?
     - IMAGE_ICC="1"        # Should we run icc profile sniffer on your images?
     - EPV="1"              # Should we run EPV (Extension Pre Validator) on your code?
-    - PHPBB_BRANCH="3.2.x"
+    - PHPBB_BRANCH="3.3.x"
 
 branches:
   only:
