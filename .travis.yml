@@ -38,6 +38,12 @@ branches:
     - develop
     - /^develop-.*$/
 
+services:
+    - redis-server
+    - postgresql
+    - mysql
+    - memcached
+
 install:
   - composer install --dev --no-interaction --prefer-source
   - travis/prepare-phpbb.sh $EXTNAME $PHPBB_BRANCH
