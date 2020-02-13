@@ -194,7 +194,7 @@ class mainlistener implements EventSubscriberInterface
 		$template_data = $event['template_data'];
 
 		//Let's get state of bc_show_bday
-		$sql = 'SELECT pf_bc_show_bday FROM ' . PROFILE_FIELDS_DATA_TABLE . ' WHERE user_id = ' . $view_user['user_id'];
+		$sql = 'SELECT pf_bc_show_bday FROM ' . PROFILE_FIELDS_DATA_TABLE . ' WHERE user_id = ' . $this->db->sql_escape($view_user['user_id']);
 		$result = $this->db->sql_query($sql);
 
 		$state = (int) $this->db->sql_fetchfield('pf_bc_show_bday');
