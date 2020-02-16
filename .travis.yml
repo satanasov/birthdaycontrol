@@ -39,10 +39,7 @@ branches:
     - master
     - develop
     - /^develop-.*$/
-addons:
-  apt:
-    sources:
-      - xdebug
+
 services:
     - postgresql
     - mysql
@@ -58,6 +55,7 @@ install:
   - sh -c "if [ '$EPV' != '0' ] && [ '$NOTESTS' = '1' ]; then phpBB/ext/$EXTNAME/travis/prepare-epv.sh $EPV $NOTESTS; fi"
 
 before_script:
+  - phpenv config-add xdebug.ini
   - travis/setup-database.sh $DB $TRAVIS_PHP_VERSION
 
 script:
