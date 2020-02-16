@@ -39,7 +39,10 @@ branches:
     - master
     - develop
     - /^develop-.*$/
-
+addons:
+  apt:
+    sources:
+      - xdebug
 services:
     - postgresql
     - mysql
