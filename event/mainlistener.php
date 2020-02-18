@@ -246,6 +246,7 @@ class mainlistener implements EventSubscriberInterface
 
 	public function age ($user_birthday)
 	{
+		$age = false;
 		list($bday_day, $bday_month, $bday_year) = array_map('intval', explode('-', $user_birthday));
 		if ($bday_year)
 		{
